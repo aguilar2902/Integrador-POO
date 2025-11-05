@@ -2,86 +2,95 @@ package Interfaz;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.util.ArrayList;
-
+import Biblioteca.Biblioteca;
+import Controlador.GestionBiblioteca;
 
 public class PanelListadoLibro extends JPanel {
     
     // ******* ATRIBUTOS *******
     private JTable tablaLibros;
+    private DefaultTableModel modeloTabla;
+    private JTextField txtBusqueda;
+    private JButton btnBuscar;
+    private GestionBiblioteca controlador;
 
     // ******* CONSTRUCTOR *******
-    public PanelListadoLibro() {
-        this.setVistaListadoLibro();
+    public PanelListadoLibro(GestionBiblioteca p_controlador) {
+        this.setControlador(p_controlador);
+        this.inicializarComponentes();
+        // Asignar el ActionListener al botón de búsqueda
+        btnBuscar.addActionListener(e -> buscarLibros());
     }
     
     // ******* SETTERS *******
-    private void setVistaListadoLibro(){
+    private void setControlador(GestionBiblioteca p_controlador){
+        this.controlador = p_controlador;
+    }
+    
+    // ******* MÉTODOS PRINCIPALES *******
+    private void inicializarComponentes(){
         setLayout(new BorderLayout(20, 20));
-        setBackground(PaletaColores.FONDO_GENERAL); // Fondo Gris Claro
-        setBorder(BorderFactory.createEmptyBorder(30, 50, 30, 50)); // Padding externo
+        setBackground(PaletaColores.FONDO_GENERAL); 
+        setBorder(BorderFactory.createEmptyBorder(30, 50, 30, 50));
         
         // --- Título Superior ---
-        JLabel lblTitulo = new JLabel("LISTADO DE LIBROS EN INVENTARIO", JLabel.CENTER);
+        JLabel lblTitulo = new JLabel("LISTADO DE LIBROS", JLabel.CENTER);
         lblTitulo.setFont(Estilo.FUENTE_TITULO_PRINCIPAL);
         lblTitulo.setForeground(PaletaColores.COLOR_SECUNDARIO);
         add(lblTitulo, BorderLayout.NORTH);
 
-        // --- Área Central: Búsqueda y Tabla ---
-        JPanel panelCentral = new JPanel(new BorderLayout(10, 10));
-        panelCentral.setOpaque(false); // Transparente para usar el fondo gris claro
-        
-        // 1. Barra de Búsqueda (Arriba)
+        // --- Panel central (buscador + tabla) ---
+        JPanel panelCentral = new JPanel(new BorderLayout(15, 15));
+        panelCentral.setOpaque(false);
         panelCentral.add(crearPanelBusqueda(), BorderLayout.NORTH);
-        
-        // 2. Tabla de Listado (Centro - Dentro de una Tarjeta)
         panelCentral.add(crearTarjetaTabla(), BorderLayout.CENTER);
         
         add(panelCentral, BorderLayout.CENTER);
     }
     
-    // ******* OTROS MÉTODOS *******
-    // ===============================================
-    //               MÉTODOS AUXILIARES
-    // ===============================================
-
+    // ******* PANEL DE BÚSQUEDA *******
     private JPanel crearPanelBusqueda() {
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
         panel.setOpaque(false);
         
-        JTextField txtBusqueda = new JTextField(30);
-        txtBusqueda.setFont(Estilo.FUENTE_ETIQUETA);
-        
-        JButton btnBuscar = new JButton("Buscar");
-        btnBuscar.setFont(Estilo.FUENTE_BOTON);
-        btnBuscar.setBackground(PaletaColores.COLOR_PRIMARIO); // Botón de acción principal
-        btnBuscar.setForeground(PaletaColores.TEXTO_CLARO);
-
         JLabel lblFiltrar = new JLabel("Filtrar por Título/Estado:");
-        lblFiltrar.setFont(Estilo.FUENTE_ETIQUETA); // Aplicar la fuente en una línea separada
-
-        panel.add(lblFiltrar); // Añadir la etiqueta al panel
+        lblFiltrar.setFont(Estilo.FUENTE_ETIQUETA);
+        
+        txtBusqueda = new JTextField(30);
+        txtBusqueda.setFont(Estilo.FUENTE_ETIQUETA);
+        txtBusqueda.setToolTipText("Ingrese parte del título o el estado del libro");
+        
+        btnBuscar = new JButton("Buscar");
+        btnBuscar.setFont(Estilo.FUENTE_BOTON);
+        btnBuscar.setBackground(PaletaColores.COLOR_PRIMARIO);
+        btnBuscar.setForeground(PaletaColores.TEXTO_CLARO);
+        btnBuscar.setFocusPainted(false);
+        btnBuscar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        
+        panel.add(lblFiltrar);
         panel.add(txtBusqueda);
         panel.add(btnBuscar);
         
         return panel;
     }
     
+    // ******* TARJETA CON TABLA *******
     private PanelRedondeado crearTarjetaTabla() {
-        // La tabla se inserta en tu PanelRedondeado para el look moderno de "tarjeta"
         PanelRedondeado tarjeta = new PanelRedondeado(
             20, 
-            PaletaColores.FONDO_BLANCO, // Fondo Blanco puro
-            PaletaColores.COLOR_SECUNDARIO, // Borde Azul Índigo
+            PaletaColores.FONDO_BLANCO, 
+            PaletaColores.COLOR_SECUNDARIO, 
             3
         );
-        tarjeta.setLayout(new BorderLayout());
-        tarjeta.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        tarjeta.setLayout(new BorderLayout(10,10));
+        tarjeta.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         
-        // 1. Definición del Modelo de la Tabla
-        String[] columnas = {"Título", "Edición", "Editorial", "Año", "Estado Préstamo"};
-        DefaultTableModel modelo = new DefaultTableModel(columnas, 0) {
+        // Definición del Modelo de la Tabla
+        String[] columnas = {"Nro", "Titulo", "Estado Préstamo"};
+        modeloTabla = new DefaultTableModel(columnas, 0) {
              // Anulación para que las celdas no sean editables
              @Override
              public boolean isCellEditable(int row, int column) {
@@ -90,21 +99,32 @@ public class PanelListadoLibro extends JPanel {
         };
 
         // 2. Creación de la JTable
-        tablaLibros = new JTable(modelo);
+        tablaLibros = new JTable(modeloTabla);
         tablaLibros.setFont(new Font("SansSerif", Font.PLAIN, 14));
         tablaLibros.setRowHeight(25); // Altura de fila para un aspecto más limpio
+        tablaLibros.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tablaLibros.setShowHorizontalLines(true);
         tablaLibros.getTableHeader().setFont(Estilo.FUENTE_ETIQUETA);
         tablaLibros.getTableHeader().setBackground(PaletaColores.FONDO_BLANCO); 
+        tablaLibros.getTableHeader().setReorderingAllowed(false);
         tablaLibros.setGridColor(new Color(230, 230, 230)); // Líneas de cuadrícula sutiles
-
-        // Llamada a la función para cargar datos (inicialmente vacía)
-        cargarDatosTabla(modelo); 
-        
+ 
+        // 👇 *** CENTRAR EL CONTENIDO DE LAS CELDAS ***
+        DefaultTableCellRenderer centrado = new DefaultTableCellRenderer();
+        centrado.setHorizontalAlignment(SwingConstants.CENTER);
+    
+        // Aplicar el renderizador a todas las columnas
+        for (int i = 0; i < tablaLibros.getColumnCount(); i++) {
+            tablaLibros.getColumnModel().getColumn(i).setCellRenderer(centrado);
+        }
         // 3. Agregar la tabla a un JScrollPane (imprescindible para JTable)
         JScrollPane scrollPane = new JScrollPane(tablaLibros);
         scrollPane.setBorder(BorderFactory.createEmptyBorder()); // Eliminar el borde feo del JScrollPane
         
         tarjeta.add(scrollPane, BorderLayout.CENTER);
+        
+        // Llamada a la función para cargar datos (inicialmente vacía)
+        cargarDatosTabla();
         
         return tarjeta;
     }
@@ -113,37 +133,89 @@ public class PanelListadoLibro extends JPanel {
      * Lógica para cargar los datos en el modelo de la tabla.
      * En tu proyecto POO, esto llamará a biblioteca.listaDeLibros()
      */
-    private void cargarDatosTabla(DefaultTableModel modelo) {
-        // *** ESTA ES LA PARTE QUE CONECTA CON TU LÓGICA DE NEGOCIO ***
+    private void cargarDatosTabla() {
+        modeloTabla.setRowCount(0); // Limpiar tabla
         
-        // 1. Limpiar datos antiguos
-        modelo.setRowCount(0);
-
-        // 2. Datos de prueba (Reemplazar con la lógica de tu Biblioteca)
-        /*
-        ArrayList<Libro> lista = biblioteca.getLibros(); 
-        for (Libro libro : lista) {
-            String estado = libro.prestado() ? "PRESTADO 🚫" : "DISPONIBLE ✅";
-            modelo.addRow(new Object[]{
-                libro.getTitulo(),
-                libro.getEdicion(),
-                libro.getEditorial(),
-                libro.getAnio(),
-                estado
-            });
+        try {
+            // 👇 Obtener datos desde el controlador
+            ArrayList<String[]> listaLibros = controlador.listaDeLibros();
+            
+            if (listaLibros != null && !listaLibros.isEmpty()) {
+                for (String[] libro : listaLibros) {
+                    modeloTabla.addRow(libro); // libro ya es [titulo, estado]
+                }
+            } else {
+                // Mensaje si no hay libros
+                modeloTabla.addRow(new Object[]{"No hay libros registrados", ""});
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "Error al cargar los libros: " + e.getMessage(),
+                "Error", 
+                JOptionPane.ERROR_MESSAGE);
         }
-        */
+    }
+    
+    // ******* MÉTODO DE BÚSQUEDA/FILTRADO *******
+    private void buscarLibros() {
+        String busqueda = txtBusqueda.getText().trim().toLowerCase();
         
-        // Datos Estáticos para Testear el Diseño:
-        modelo.addRow(new Object[]{"JAVA. Como Programar", 7, "Pearson", 2015, "DISPONIBLE ✅"});
-        modelo.addRow(new Object[]{"Estructuras de Datos", 3, "Mc Graw Hill", 2018, "PRESTADO 🚫"});
-        modelo.addRow(new Object[]{"Teoría de la Computación", 1, "Cengage", 2012, "DISPONIBLE ✅"});
-        modelo.addRow(new Object[]{"POO con Python", 5, "O'Reilly", 2020, "PRESTADO 🚫"});
+        // Si el campo está vacío, recargar todo
+        if (busqueda.isEmpty()) {
+            cargarDatosTabla();
+            return;
+        }
+        
+        // Limpiar tabla
+        modeloTabla.setRowCount(0);
+        
+        try {
+            // Obtener lista completa
+            ArrayList<String[]> listaCompleta = controlador.listaDeLibros();
+            
+            // Filtrar por título o estado
+            boolean encontrado = false;
+            for (String[] libro : listaCompleta) {
+                String titulo = libro[0].toLowerCase();
+                String estado = libro[1].toLowerCase();
+                
+                // Verificar si coincide con título o estado
+                if (titulo.contains(busqueda) || estado.contains(busqueda)) {
+                    modeloTabla.addRow(libro);
+                    encontrado = true;
+                }
+            }
+            
+            // Si no se encontró nada
+            if (!encontrado) {
+                JOptionPane.showMessageDialog(this,
+                    "No se encontraron libros que coincidan con: " + txtBusqueda.getText(),
+                    "Sin resultados",
+                    JOptionPane.INFORMATION_MESSAGE);
+                cargarDatosTabla(); // Recargar todos los datos
+            }
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "Error al buscar libros: " + e.getMessage(),
+                "Error", 
+                JOptionPane.ERROR_MESSAGE);
+        }
     }
 
-    // --- Método para actualizar el listado ---
-    public void actualizarListado() {
-        // cargarDatosTabla((DefaultTableModel) tablaLibros.getModel());
-        // Esto sería útil para recargar la lista si, por ejemplo, se registra un nuevo préstamo.
+    public void recargarTabla() {
+        cargarDatosTabla();
+    }
+
+    public String getTextoBusqueda() {
+        return txtBusqueda.getText().trim();
+    }
+
+    public JTable getTabla() {
+        return tablaLibros;
+    }
+
+    public DefaultTableModel getModeloTabla() {
+        return modeloTabla;
     }
 }

@@ -135,7 +135,7 @@ public class PanelPrestamo extends JPanel {
                 "Préstamo del libro '" + txtTituloPrestamo.getText() + "' registrado con éxito.", 
                 "Operación Exitosa", // Título profesional
                 JOptionPane.INFORMATION_MESSAGE); // Icono de Información (el check azul)
-        
+                this.controlador.registrarNuevoPrestamo(socio,libro);
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, 
                 "El DNI, Edición y Año deben ser números válidos.", 

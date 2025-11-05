@@ -73,25 +73,60 @@ public class GestionBiblioteca {
         return aplicarFiltroTabla(datosTabla, tipoFiltro);
     }
     public Libro buscarLibroPorTitulo(String titulo) {
-    // Obtenemos la lista maestra de libros de la capa de Negocio.
-    ArrayList<Libro> libros = this.bibliotecaActual.getLibros(); 
-    
-    if (libros == null) {
-        return null; // No hay inventario.
-    }
-
-    // Iteramos sobre los objetos Libro para encontrar la coincidencia por título
-    for (Libro libro : libros) {
-        // Usamos equalsIgnoreCase para una búsqueda más amigable
-        if (libro.getTitulo().equalsIgnoreCase(titulo.trim())) { 
-            return libro; // Devuelve el objeto Libro encontrado
+        // Obtenemos la lista maestra de libros de la capa de Negocio.
+        ArrayList<Libro> libros = this.bibliotecaActual.getLibros(); 
+        
+        if (libros == null) {
+            return null; // No hay inventario.
         }
+    
+        // Iteramos sobre los objetos Libro para encontrar la coincidencia por título
+        for (Libro libro : libros) {
+            // Usamos equalsIgnoreCase para una búsqueda más amigable
+            if (libro.getTitulo().equalsIgnoreCase(titulo.trim())) { 
+                return libro; // Devuelve el objeto Libro encontrado
+            }
+        }
+        
+        return null; // Libro no encontrado
     }
-    
-    return null; // Libro no encontrado
-}
     // --- MÉTODOS AUXILIARES DENTRO DE GESTIONBIBLIOTECA ---
+    public ArrayList<String[]> listaDeLibros(){
+        String listaLibros = this.bibliotecaActual.listaDeLibros();
+        
+        ArrayList<String[]> datosLibros = new ArrayList<String[]>();
+        
+        String[]lineas = listaLibros.split("\n"); //divido String por lineas
+        
+        int numeroFila = 1; 
+        
+        for (String linea : lineas) {
+            // Ejemplo de línea: "1) Titulo: Java. Como Programar || Prestado: (No)"
+            if (linea.contains("Titulo:") && linea.contains("Prestado:")) {
+                // Extraer el título
+                String titulo = linea.substring(linea.indexOf("Titulo:") + 8, linea.indexOf("||")).trim();
     
+                // Extraer el estado de préstamo
+                String prestado = linea.substring(linea.indexOf("Prestado: (") + 11, linea.lastIndexOf(")")).trim();
+                
+                // 👇 Convertir "Si"/"No" a formato visual con emojis
+                String estadoFormateado;
+                if (prestado.equalsIgnoreCase("Si")) {
+                    estadoFormateado = "PRESTADO 🚫";
+                } else {
+                    estadoFormateado = "DISPONIBLE ✅";
+                }
+                // Guardar el resultado como array
+                datosLibros.add(new String[]{
+                    String.valueOf(numeroFila),
+                    titulo, 
+                    estadoFormateado
+                });
+                numeroFila++;
+            }
+        }
+        return datosLibros;
+    }
     // 💡 El método ahora devuelve ArrayList<String[]>
     // Dentro de la clase GestionBiblioteca
 
