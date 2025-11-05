@@ -1,0 +1,18 @@
+#BlueJ class context
+comment0.target=PanelListadoLibro
+comment1.params=
+comment1.target=PanelListadoLibro()
+comment2.params=
+comment2.target=void\ setVistaListadoLibro()
+comment3.params=
+comment3.target=javax.swing.JPanel\ crearPanelBusqueda()
+comment4.params=
+comment4.target=PanelRedondeado\ crearTarjetaTabla()
+comment5.params=row\ column
+comment5.target=boolean\ isCellEditable(int,\ int)
+comment6.params=modelo
+comment6.target=void\ cargarDatosTabla(javax.swing.table.DefaultTableModel)
+comment6.text=\r\n\ L\u00F3gica\ para\ cargar\ los\ datos\ en\ el\ modelo\ de\ la\ tabla.\r\n\ En\ tu\ proyecto\ POO,\ esto\ llamar\u00E1\ a\ biblioteca.listaDeLibros()\r\n
+comment7.params=
+comment7.target=void\ actualizarListado()
+numComments=8

@@ -1,0 +1,11 @@
+#BlueJ class context
+comment0.target=BordeRedondeado
+comment1.params=radius\ color\ thickness
+comment1.target=BordeRedondeado(int,\ java.awt.Color,\ int)
+comment2.params=c
+comment2.target=java.awt.Insets\ getBorderInsets(java.awt.Component)
+comment3.params=
+comment3.target=boolean\ isBorderOpaque()
+comment4.params=c\ g\ x\ y\ width\ height
+comment4.target=void\ paintBorder(java.awt.Component,\ java.awt.Graphics,\ int,\ int,\ int,\ int)
+numComments=5

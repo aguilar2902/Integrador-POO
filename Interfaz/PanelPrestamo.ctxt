@@ -1,0 +1,13 @@
+#BlueJ class context
+comment0.target=PanelPrestamo
+comment1.params=p_controlador
+comment1.target=PanelPrestamo(Controlador.GestionBiblioteca)
+comment2.params=p_controlador
+comment2.target=void\ setControlador(Controlador.GestionBiblioteca)
+comment3.params=
+comment3.target=void\ setVistaPrestamo()
+comment4.params=
+comment4.target=PanelRedondeado\ crearTarjetaPrestamo()
+comment5.params=
+comment5.target=void\ registrarPrestamo()
+numComments=6

@@ -1,0 +1,17 @@
+#BlueJ class context
+comment0.target=Estudiante
+comment0.text=\r\n\ Clase\ derivada\ de\ Socio.\ Representa\ a\ un\ estudiante\ de\ la\ biblioteca.\r\n\ \r\n\ @author\ Grupo\ 1.1\ Sosa\ Alejandro\r\n\ @Clase\ Estudiante\ -\ TP7\r\n\ \r\n
+comment1.params=p_dniSocio\ p_nombre\ p_carrera
+comment1.target=Estudiante(int,\ java.lang.String,\ java.lang.String)
+comment1.text=\r\n\ Constructor\ con\ par\u00E1metros,\ instancia\ un\ objeto\ Estudiante\r\n\ @param\ p_dniSocio\ D.N.I.\ del\ estudiante\r\n\ @param\ p_nombre\ Nombre\ completo\ del\ estudiante\r\n\ @param\ p_carrera\ Carrera\ del\ estudiante\r\n
+comment2.params=p_carrera
+comment2.target=void\ setCarrera(java.lang.String)
+comment3.params=
+comment3.target=java.lang.String\ getCarrera()
+comment4.params=
+comment4.target=boolean\ puedePedir()
+comment4.text=\r\n\ M\u00E9todo\ que\ indica\ si\ el\ estudiante\ puede\ pedir\ un\ libro\r\n\ @return\ true\ si\ no\ tiene\ pr\u00E9stamos\ vencidos\ y\ no\ supera\ los\ 3\ libros\ prestados\r\n\ @Override\r\n
+comment5.params=
+comment5.target=java.lang.String\ soyDeLaClase()
+comment5.text=\r\n\ M\u00E9todo\ que\ devuelve\ el\ tipo\ de\ socio\r\n\ @return\ "Estudiante"\r\n\ @Override\r\n
+numComments=6

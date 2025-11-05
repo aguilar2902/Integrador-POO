@@ -1,0 +1,18 @@
+#BlueJ class context
+comment0.target=PanelListadoSocio
+comment1.params=p_controlador
+comment1.target=PanelListadoSocio(Controlador.GestionBiblioteca)
+comment2.params=p_controlador
+comment2.target=void\ setControlador(Controlador.GestionBiblioteca)
+comment3.params=
+comment3.target=void\ setVistaListadoSocio()
+comment4.params=
+comment4.target=javax.swing.JPanel\ crearPanelFiltro()
+comment5.params=
+comment5.target=PanelRedondeado\ crearTarjetaTabla()
+comment6.params=row\ column
+comment6.target=boolean\ isCellEditable(int,\ int)
+comment7.params=tipo
+comment7.target=void\ cargarDatosTabla(java.lang.String)
+comment7.text=\r\n\ Carga\ los\ datos\ en\ la\ tabla,\ filtrando\ por\ tipo\ de\ socio.\r\n
+numComments=8

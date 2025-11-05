@@ -1,0 +1,7 @@
+#BlueJ class context
+comment0.target=PanelRedondeado
+comment1.params=radius\ backgroundColor\ borderColor\ borderThickness
+comment1.target=PanelRedondeado(int,\ java.awt.Color,\ java.awt.Color,\ int)
+comment2.params=g
+comment2.target=void\ paintComponent(java.awt.Graphics)
+numComments=3

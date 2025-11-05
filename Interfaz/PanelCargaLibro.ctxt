@@ -1,0 +1,15 @@
+#BlueJ class context
+comment0.target=PanelCargaLibro
+comment1.params=p_controlador
+comment1.target=PanelCargaLibro(Controlador.GestionBiblioteca)
+comment2.params=p_controlador
+comment2.target=void\ setControlador(Controlador.GestionBiblioteca)
+comment3.params=
+comment3.target=void\ setVistaCargaLibro()
+comment4.params=
+comment4.target=PanelRedondeado\ crearTarjetaFormulario()
+comment5.params=
+comment5.target=javax.swing.JPanel\ crearPanelCampos()
+comment6.params=
+comment6.target=void\ registrarLibro()
+numComments=7

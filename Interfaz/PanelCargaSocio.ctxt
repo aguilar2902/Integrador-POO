@@ -1,0 +1,19 @@
+#BlueJ class context
+comment0.target=PanelCargaSocio
+comment1.params=p_controlador
+comment1.target=PanelCargaSocio(Controlador.GestionBiblioteca)
+comment2.params=p_controlador
+comment2.target=void\ setControlador(Controlador.GestionBiblioteca)
+comment3.params=
+comment3.target=void\ setVistaCargaSocio()
+comment4.params=
+comment4.target=PanelRedondeado\ crearTarjetaFormulario()
+comment5.params=
+comment5.target=javax.swing.JPanel\ crearPanelComun()
+comment6.params=
+comment6.target=javax.swing.JPanel\ crearPanelDocente()
+comment7.params=
+comment7.target=javax.swing.JPanel\ crearPanelEstudiante()
+comment8.params=
+comment8.target=void\ registrarSocio()
+numComments=9

@@ -1,0 +1,11 @@
+#BlueJ class context
+comment0.target=PanelInicio
+comment1.params=
+comment1.target=PanelInicio()
+comment2.params=
+comment2.target=void\ setVistaInicio()
+comment3.params=titulo\ dato
+comment3.target=javax.swing.JPanel\ crearTarjetaSimple(java.lang.String,\ java.lang.String)
+comment4.params=titulo\ elementos
+comment4.target=javax.swing.JPanel\ crearTarjetaLista(java.lang.String,\ java.lang.String[])
+numComments=5
