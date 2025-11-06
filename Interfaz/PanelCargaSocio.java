@@ -1,9 +1,16 @@
 package Interfaz;
 
 import javax.swing.*;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import Controlador.GestionBiblioteca;
 
 public class PanelCargaSocio extends JPanel {
@@ -31,13 +38,24 @@ public class PanelCargaSocio extends JPanel {
     private void setVistaCargaSocio(){
         setLayout(new BorderLayout(20, 20));
         setBackground(PaletaColores.FONDO_GENERAL); 
-        setBorder(BorderFactory.createEmptyBorder(30, 150, 30, 150)); // Más padding lateral
+        setBorder(BorderFactory.createEmptyBorder(30, 150, 30, 150));
         
         // --- Título Superior ---
+        JPanel panelTitulo = new JPanel(new BorderLayout());
+        panelTitulo.setOpaque(false);
+        panelTitulo.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
+        
         JLabel lblTitulo = new JLabel("REGISTRO DE NUEVO SOCIO", JLabel.CENTER);
         lblTitulo.setFont(Estilo.FUENTE_TITULO_PRINCIPAL);
-        lblTitulo.setForeground(PaletaColores.COLOR_PRIMARIO); // Usamos color primario aquí
-        add(lblTitulo, BorderLayout.NORTH);
+        lblTitulo.setForeground(PaletaColores.COLOR_PRIMARIO);
+        panelTitulo.add(lblTitulo, BorderLayout.CENTER);
+        
+        JLabel lblSubtitulo = new JLabel("Complete el formulario con los datos del socio", JLabel.CENTER);
+        lblSubtitulo.setFont(new Font(Estilo.FUENTE_ETIQUETA.getFamily(), Font.PLAIN, 13));
+        lblSubtitulo.setForeground(new Color(120, 120, 120));
+        panelTitulo.add(lblSubtitulo, BorderLayout.SOUTH);
+        
+        add(panelTitulo, BorderLayout.NORTH);
 
         // --- Área Central: Tarjeta de Formulario ---
         PanelRedondeado tarjeta = crearTarjetaFormulario();
@@ -53,7 +71,7 @@ public class PanelCargaSocio extends JPanel {
             3
         );
         tarjeta.setLayout(new BorderLayout(30, 30));
-        tarjeta.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
+        tarjeta.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
 
         // 1. Panel Común (DNI, Nombre, ComboBox)
         JPanel panelComun = crearPanelComun();
@@ -67,13 +85,14 @@ public class PanelCargaSocio extends JPanel {
         tarjeta.add(panelEspecifico, BorderLayout.CENTER);
 
         // 3. Botón Guardar
-        btnGuardar = new JButton("Registrar Socio");
-        btnGuardar.setFont(Estilo.FUENTE_BOTON);
-        btnGuardar.setBackground(PaletaColores.COLOR_PRIMARIO);
-        btnGuardar.setForeground(PaletaColores.TEXTO_CLARO);
-        btnGuardar.setFocusPainted(false);
+        JPanel panelBoton = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 20));
+        panelBoton.setOpaque(false);
+        
+        btnGuardar = crearBotonEstilizado("Registrar Socio");
         btnGuardar.addActionListener(e -> registrarSocio());
-        tarjeta.add(btnGuardar, BorderLayout.SOUTH);
+        panelBoton.add(btnGuardar);
+        
+        tarjeta.add(panelBoton, BorderLayout.SOUTH);
 
         return tarjeta;
     }
@@ -86,41 +105,35 @@ public class PanelCargaSocio extends JPanel {
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setOpaque(false);
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(8, 5, 8, 5);
+        gbc.insets = new Insets(12, 10, 12, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
         
         // --- CAMPO 1: DNI ---
-        gbc.gridx = 0; gbc.gridy = 0; gbc.weightx = 0.2;
-        JLabel lblDni = new JLabel("D.N.I.:");
-        lblDni.setFont(Estilo.FUENTE_ETIQUETA);
+        gbc.gridx = 0; gbc.gridy = 0; gbc.weightx = 0.25;
+        JLabel lblDni = crearEtiquetaEstilizada("D.N.I.:");
         panel.add(lblDni, gbc);
         
-        txtDni = new JTextField(20);
-        txtDni.setFont(Estilo.FUENTE_ETIQUETA);
-        gbc.gridx = 1; gbc.gridy = 0; gbc.weightx = 0.8;
+        txtDni = crearCampoTextoEstilizado(20);
+        gbc.gridx = 1; gbc.gridy = 0; gbc.weightx = 0.75;
         panel.add(txtDni, gbc);
 
         // --- CAMPO 2: Nombre y Apellido ---
-        gbc.gridx = 0; gbc.gridy = 1; gbc.weightx = 0.2;
-        JLabel lblNombre = new JLabel("Nombre y Apellido:");
-        lblNombre.setFont(Estilo.FUENTE_ETIQUETA);
+        gbc.gridx = 0; gbc.gridy = 1; gbc.weightx = 0.25;
+        JLabel lblNombre = crearEtiquetaEstilizada("Nombre y Apellido:");
         panel.add(lblNombre, gbc);
         
-        txtNombre = new JTextField(20);
-        txtNombre.setFont(Estilo.FUENTE_ETIQUETA);
-        gbc.gridx = 1; gbc.gridy = 1; gbc.weightx = 0.8;
+        txtNombre = crearCampoTextoEstilizado(20);
+        gbc.gridx = 1; gbc.gridy = 1; gbc.weightx = 0.75;
         panel.add(txtNombre, gbc);
 
         // --- CAMPO 3: Selector de Tipo de Socio ---
-        gbc.gridx = 0; gbc.gridy = 2; gbc.weightx = 0.2;
-        JLabel lblTipo = new JLabel("Tipo de Socio:");
-        lblTipo.setFont(Estilo.FUENTE_ETIQUETA);
+        gbc.gridx = 0; gbc.gridy = 2; gbc.weightx = 0.25;
+        JLabel lblTipo = crearEtiquetaEstilizada("Tipo de Socio:");
         panel.add(lblTipo, gbc);
         
         String[] tipos = {"Estudiante", "Docente"};
-        cmbTipoSocio = new JComboBox<>(tipos);
-        cmbTipoSocio.setFont(Estilo.FUENTE_ETIQUETA);
-        gbc.gridx = 1; gbc.gridy = 2; gbc.weightx = 0.8;
+        cmbTipoSocio = crearComboBoxEstilizado(tipos);
+        gbc.gridx = 1; gbc.gridy = 2; gbc.weightx = 0.75;
         panel.add(cmbTipoSocio, gbc);
         
         // Listener para cambiar el panel dinámico
@@ -139,21 +152,29 @@ public class PanelCargaSocio extends JPanel {
     private JPanel crearPanelDocente() {
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setOpaque(false);
-        panel.setBorder(BorderFactory.createTitledBorder("Datos Específicos del Docente"));
+        panel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(PaletaColores.COLOR_SECUNDARIO, 1, true),
+                "Datos Específicos del Docente",
+                0,
+                0,
+                new Font(Estilo.FUENTE_ETIQUETA.getFamily(), Font.BOLD, 13),
+                PaletaColores.COLOR_PRIMARIO
+            ),
+            BorderFactory.createEmptyBorder(15, 15, 15, 15)
+        ));
         
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(8, 5, 8, 5);
+        gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
         
         // --- CAMPO: Área ---
-        gbc.gridx = 0; gbc.gridy = 0; gbc.weightx = 0.2;
-        JLabel lblArea = new JLabel("Área de Especialización:");
-        lblArea.setFont(Estilo.FUENTE_ETIQUETA);
+        gbc.gridx = 0; gbc.gridy = 0; gbc.weightx = 0.25;
+        JLabel lblArea = crearEtiquetaEstilizada("Área de Especialización:");
         panel.add(lblArea, gbc);
         
-        txtArea = new JTextField(20);
-        txtArea.setFont(Estilo.FUENTE_ETIQUETA);
-        gbc.gridx = 1; gbc.gridy = 0; gbc.weightx = 0.8;
+        txtArea = crearCampoTextoEstilizado(20);
+        gbc.gridx = 1; gbc.gridy = 0; gbc.weightx = 0.75;
         panel.add(txtArea, gbc);
         
         return panel;
@@ -166,24 +187,131 @@ public class PanelCargaSocio extends JPanel {
     private JPanel crearPanelEstudiante() {
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setOpaque(false);
-        panel.setBorder(BorderFactory.createTitledBorder("Datos Específicos del Estudiante"));
+        panel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(PaletaColores.COLOR_SECUNDARIO, 1, true),
+                "Datos Específicos del Estudiante",
+                0,
+                0,
+                new Font(Estilo.FUENTE_ETIQUETA.getFamily(), Font.BOLD, 13),
+                PaletaColores.COLOR_PRIMARIO
+            ),
+            BorderFactory.createEmptyBorder(15, 15, 15, 15)
+        ));
         
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(8, 5, 8, 5);
+        gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
         
         // --- CAMPO: Carrera ---
-        gbc.gridx = 0; gbc.gridy = 0; gbc.weightx = 0.2;
-        JLabel lblCarrera = new JLabel("Carrera:");
-        lblCarrera.setFont(Estilo.FUENTE_ETIQUETA);
+        gbc.gridx = 0; gbc.gridy = 0; gbc.weightx = 0.25;
+        JLabel lblCarrera = crearEtiquetaEstilizada("Carrera:");
         panel.add(lblCarrera, gbc);
         
-        txtCarrera = new JTextField(20);
-        txtCarrera.setFont(Estilo.FUENTE_ETIQUETA);
-        gbc.gridx = 1; gbc.gridy = 0; gbc.weightx = 0.8;
+        txtCarrera = crearCampoTextoEstilizado(20);
+        gbc.gridx = 1; gbc.gridy = 0; gbc.weightx = 0.75;
         panel.add(txtCarrera, gbc);
         
         return panel;
+    }
+
+    // ===============================================
+    //        MÉTODOS DE ESTILIZACIÓN
+    // ===============================================
+    
+    private JLabel crearEtiquetaEstilizada(String texto) {
+        JLabel label = new JLabel(texto);
+        label.setFont(new Font(Estilo.FUENTE_ETIQUETA.getFamily(), Font.BOLD, 14));
+        label.setForeground(new Color(60, 60, 60));
+        return label;
+    }
+    
+    private JTextField crearCampoTextoEstilizado(int columnas) {
+        JTextField campo = new JTextField(columnas);
+        campo.setFont(new Font(Estilo.FUENTE_ETIQUETA.getFamily(), Font.PLAIN, 14));
+        campo.setPreferredSize(new Dimension(campo.getPreferredSize().width, 40));
+        
+        // Borde redondeado con padding interno
+        campo.setBorder(BorderFactory.createCompoundBorder(
+            new LineBorder(new Color(200, 200, 200), 1, true),
+            BorderFactory.createEmptyBorder(5, 15, 5, 15)
+        ));
+        
+        // Efecto hover
+        campo.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                campo.setBorder(BorderFactory.createCompoundBorder(
+                    new LineBorder(PaletaColores.COLOR_PRIMARIO, 2, true),
+                    BorderFactory.createEmptyBorder(5, 15, 5, 15)
+                ));
+            }
+            
+            @Override
+            public void focusLost(FocusEvent e) {
+                campo.setBorder(BorderFactory.createCompoundBorder(
+                    new LineBorder(new Color(200, 200, 200), 1, true),
+                    BorderFactory.createEmptyBorder(5, 15, 5, 15)
+                ));
+            }
+        });
+        
+        return campo;
+    }
+    
+    private JComboBox<String> crearComboBoxEstilizado(String[] items) {
+        JComboBox<String> combo = new JComboBox<>(items);
+        combo.setFont(new Font(Estilo.FUENTE_ETIQUETA.getFamily(), Font.PLAIN, 14));
+        combo.setPreferredSize(new Dimension(combo.getPreferredSize().width, 40));
+        combo.setBackground(Color.WHITE);
+        combo.setBorder(BorderFactory.createCompoundBorder(
+            new LineBorder(new Color(200, 200, 200), 1, true),
+            BorderFactory.createEmptyBorder(5, 10, 5, 10)
+        ));
+        
+        return combo;
+    }
+    
+    private JButton crearBotonEstilizado(String texto) {
+        JButton boton = new JButton(texto);
+        boton.setFont(new Font(Estilo.FUENTE_BOTON.getFamily(), Font.BOLD, 15));
+        boton.setPreferredSize(new Dimension(250, 45));
+        boton.setBackground(PaletaColores.COLOR_PRIMARIO);
+        boton.setForeground(PaletaColores.TEXTO_CLARO);
+        boton.setFocusPainted(false);
+        boton.setBorderPainted(false);
+        boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        
+        // Bordes redondeados
+        boton.setBorder(BorderFactory.createCompoundBorder(
+            new LineBorder(PaletaColores.COLOR_PRIMARIO, 0, true),
+            BorderFactory.createEmptyBorder(10, 30, 10, 30)
+        ));
+        
+        // Efecto hover
+        boton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                boton.setBackground(PaletaColores.COLOR_PRIMARIO.darker());
+            }
+            
+            @Override
+            public void mouseExited(MouseEvent e) {
+                boton.setBackground(PaletaColores.COLOR_PRIMARIO);
+            }
+            
+            @Override
+            public void mousePressed(MouseEvent e) {
+                boton.setBackground(PaletaColores.COLOR_PRIMARIO.darker().darker());
+            }
+            
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                boton.setBackground(PaletaColores.COLOR_PRIMARIO.darker());
+            }
+        });
+        
+        return boton;
     }
 
     // ===============================================
@@ -191,12 +319,12 @@ public class PanelCargaSocio extends JPanel {
     // ===============================================
 
     private void registrarSocio() {
-        String dniStr = txtDni.getText();
-        String nombre = txtNombre.getText();
+        String dniStr = txtDni.getText().trim();
+        String nombre = txtNombre.getText().trim();
         String tipo = (String) cmbTipoSocio.getSelectedItem();
         
         if (dniStr.isEmpty() || nombre.isEmpty()) {
-             JOptionPane.showMessageDialog(this, "El DNI y Nombre son campos obligatorios.", "Error de Datos", JOptionPane.ERROR_MESSAGE);
+             mostrarMensajeError("El DNI y Nombre son campos obligatorios.");
              return;
         }
 
@@ -204,30 +332,53 @@ public class PanelCargaSocio extends JPanel {
             int dni = Integer.parseInt(dniStr);
             
             if (tipo.equals("Estudiante")) {
-                String carrera = txtCarrera.getText();
+                String carrera = txtCarrera.getText().trim();
                 if (carrera.isEmpty()) throw new IllegalArgumentException("La carrera es obligatoria.");
                 
                 this.controlador.nuevoSocioEstudiante(dni, nombre, carrera);
-                JOptionPane.showMessageDialog(this, "Estudiante " + nombre + " (" + carrera + ") registrado.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                mostrarMensajeExito("Estudiante " + nombre + " registrado exitosamente.");
             } else if (tipo.equals("Docente")) {
-                String area = txtArea.getText();
+                String area = txtArea.getText().trim();
                 if (area.isEmpty()) throw new IllegalArgumentException("El área es obligatoria.");
                 this.controlador.nuevoSocioDocente(dni, nombre, area);
-                JOptionPane.showMessageDialog(this, "Docente " + nombre + " (" + area + ") registrado.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                mostrarMensajeExito("Docente " + nombre + " registrado exitosamente.");
             }
             
             // Limpiar campos después del éxito
-            txtDni.setText("");
-            txtNombre.setText("");
-            txtCarrera.setText("");
-            txtArea.setText("");
+            limpiarFormulario();
 
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "El DNI debe ser un número válido.", "Error de Formato", JOptionPane.ERROR_MESSAGE);
+            mostrarMensajeError("El DNI debe ser un número válido.");
         } catch (IllegalArgumentException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Error de Datos", JOptionPane.ERROR_MESSAGE);
+            mostrarMensajeError(e.getMessage());
         } catch (Exception e) {
-             JOptionPane.showMessageDialog(this, "Error de registro: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            mostrarMensajeError("Error de registro: " + e.getMessage());
         }
+    }
+    
+    private void limpiarFormulario() {
+        txtDni.setText("");
+        txtNombre.setText("");
+        txtCarrera.setText("");
+        txtArea.setText("");
+        cmbTipoSocio.setSelectedIndex(0);
+    }
+    
+    private void mostrarMensajeError(String mensaje) {
+        JOptionPane.showMessageDialog(
+            this, 
+            mensaje, 
+            "Error", 
+            JOptionPane.ERROR_MESSAGE
+        );
+    }
+    
+    private void mostrarMensajeExito(String mensaje) {
+        JOptionPane.showMessageDialog(
+            this, 
+            mensaje, 
+            "Registro Exitoso", 
+            JOptionPane.INFORMATION_MESSAGE
+        );
     }
 }
