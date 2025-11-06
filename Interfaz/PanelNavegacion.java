@@ -53,7 +53,7 @@ public class PanelNavegacion extends JPanel{
         btnInicio = crearBotonNavegacion("Inicio", "/img/home.png");
         btnInicio.addActionListener(e -> {
             cerrarSubmenus(); // <--- CERRAR SUBMENÚS
-            ventana.mostrarPanel(new PanelInicio());
+            ventana.mostrarPanel(new PanelInicio(controlador));
         });
         add(btnInicio);
         add(crearSeparador());

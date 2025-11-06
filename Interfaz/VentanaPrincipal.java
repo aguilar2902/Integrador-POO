@@ -61,7 +61,7 @@ public class VentanaPrincipal extends JFrame {
         add(panelContenido, BorderLayout.CENTER);
         
         // Mostrar Panel de Inicio por defecto
-        mostrarPanel(new PanelInicio()); 
+        mostrarPanel(new PanelInicio(controlador)); 
     }
 
     // ------- CAMBIA EL PANEL MOSTRADO EN EL CENTRO DE LA VENTANA -------

@@ -8,7 +8,8 @@ import Biblioteca.Biblioteca;
 import Biblioteca.Socio;
 import Biblioteca.Libro;
 import Biblioteca.LibroNoPrestadoException;
-import java.util.ArrayList; 
+import java.util.ArrayList;
+import java.util.Arrays; 
 import Persistencia.Persistencia; 
 
 public class GestionBiblioteca {
@@ -48,7 +49,9 @@ public class GestionBiblioteca {
         
         this.bibliotecaActual.prestarLibro(fechaHoy, socio, libro); 
     }
-    
+    public int obtenerSociosPorTipo(String p_tipo){
+        return this.bibliotecaActual.cantidadDeSociosPorTipo(p_tipo);
+    }
     /**
      * Obtiene el String formateado, lo parsea y lo convierte en una ArrayList de 
      * String arrays (filas) para la JTable.
@@ -64,6 +67,29 @@ public class GestionBiblioteca {
         return aplicarFiltroTabla(datosTabla, tipoFiltro);
     }
     
+    public int obtenerCantidadLibrosRegistrados(){
+        return this.bibliotecaActual.getLibros().size();
+    }
+    
+    public String[] listaDeTitulos(){
+        String listaCompleta = this.bibliotecaActual.listaDeTitulos();
+        String[] lineas =listaCompleta.split("\n");
+        return lineas;
+    }
+    public String[] listaDeDocentesResponsables(){
+        String listaCompleta = this.bibliotecaActual.listaDeDocentesResponsables();
+        String[] lineas = listaCompleta.split("\n");
+        if (lineas.length > 1) {
+            // Crear un nuevo array que comienza desde el índice 2 (ahi comienza la lista de docentes)
+            // lineas.length es el índice del final (exclusivo)
+            String[] lineasFiltradas = Arrays.copyOfRange(lineas, 2, lineas.length);
+            return lineasFiltradas;
+        }
+    
+        // Si solo hay una línea o está vacío, devolver un array vacío o el original (según la necesidad)
+        // En este caso, si solo hay una línea (que asumimos es el encabezado), devolvemos vacío.
+        return new String[0];
+    }
     public Libro buscarLibroPorTitulo(String titulo) {
         // Obtenemos la lista maestra de libros de la capa de Negocio.
         ArrayList<Libro> libros = this.bibliotecaActual.getLibros(); 
