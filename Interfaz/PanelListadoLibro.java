@@ -23,6 +23,7 @@ public class PanelListadoLibro extends JPanel {
         this.inicializarComponentes();
         // Asignar el ActionListener al botón de búsqueda
         btnBuscar.addActionListener(e -> buscarLibros());
+        this.configurarListenerSeleccion();
     }
     
     // ******* SETTERS *******
@@ -31,6 +32,46 @@ public class PanelListadoLibro extends JPanel {
     }
     
     // ******* MÉTODOS PRINCIPALES *******
+    
+    private void configurarListenerSeleccion() {
+        tablaLibros.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) { // Evita eventos duplicados
+                mostrarDetallesLibroSeleccionado();
+            }
+        });
+    }
+    private void mostrarDetallesLibroSeleccionado() {
+        int filaSeleccionada = tablaLibros.getSelectedRow();
+        
+        if (filaSeleccionada >= 0) {
+            // Obtener el TÍTULO de la columna 1
+            String titulo = tablaLibros.getValueAt(filaSeleccionada, 1).toString();
+            
+            // Validar que no sea el mensaje de "No hay libros"
+            if (titulo.equals("No hay libros registrados")) {
+                return; // No hacer nada
+            }
+            
+            // Obtener información detallada del controlador
+            String detalles = controlador.obtenerDetallesLibro(titulo);
+            
+            // Crear un área de texto para mostrar los detalles
+            JTextArea textArea = new JTextArea(detalles);
+            textArea.setEditable(false);
+            textArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
+            textArea.setBackground(PaletaColores.FONDO_BLANCO);
+            textArea.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+            
+            JScrollPane scrollPane = new JScrollPane(textArea);
+            scrollPane.setPreferredSize(new Dimension(450, 300));
+            
+            // Mostrar en un diálogo personalizado
+            JOptionPane.showMessageDialog(this,
+                scrollPane,
+                "📖 Detalles del Libro: " + titulo,
+                JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
     private void inicializarComponentes(){
         setLayout(new BorderLayout(20, 20));
         setBackground(PaletaColores.FONDO_GENERAL); 

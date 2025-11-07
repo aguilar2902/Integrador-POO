@@ -25,7 +25,7 @@ public class PanelInicio extends JPanel {
         
         // ======= ENCABEZADO =======
         JLabel lblTitulo = new JLabel("SISTEMA DE GESTIÓN DE BIBLIOTECA", JLabel.CENTER);
-        lblTitulo.setFont(new Font("SansSerif", Font.BOLD, 36));
+        lblTitulo.setFont(Estilo.FUENTE_TITULO_DASHBOARD);
         lblTitulo.setForeground(PaletaColores.TEXTO_OSCURO);
         lblTitulo.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
         add(lblTitulo, BorderLayout.NORTH);
@@ -41,25 +41,17 @@ public class PanelInicio extends JPanel {
         
         
         // ======= TARJETAS SUPERIORES (Datos numéricos) - AHORA ESTÁTICOS =======
-        panelCentral.add(crearTarjetaSimple("CANTIDAD DE ESTUDIANTES", cantEstudiantes));
-        panelCentral.add(crearTarjetaSimple("CANTIDAD DE LIBROS REGISTRADOS", cantLibros));
+        panelCentral.add(crearTarjetaSimple("CANTIDAD DE ESTUDIANTES", cantEstudiantes, "👥"));
+        panelCentral.add(crearTarjetaSimple("CANTIDAD DE LIBROS REGISTRADOS", cantLibros, "📚"));
 
         // --- DATOS ESTÁTICOS DE LISTAS ---
         String[] titulosEstaticos = {"POO con Java", "Cálculo Avanzado", "Teoría de Conjuntos"};
         
         // ======= TARJETAS INFERIORES (Listas) =======
-        
-
-        panelCentral.add(crearTarjetaLista("DOCENTES RESPONSABLES", this.controlador.listaDeDocentesResponsables()));
-        panelCentral.add(crearTarjetaLista("LIBROS REGISTRADOS", this.controlador.listaDeTitulos()));
-
-        // 3. Lista de Socios
-        // REEMPLAZO: Se usa el array estático
-        //panelCentral.add(crearTarjetaLista("LISTA DE SOCIOS", sociosEstaticos));
-
+        panelCentral.add(crearTarjetaLista("DOCENTES RESPONSABLES", this.controlador.listaDeDocentesResponsables(), "👨‍🏫"));
+        panelCentral.add(crearTarjetaLista("LIBROS REGISTRADOS", this.controlador.listaDeTitulos(), "📖"));
 
         add(panelCentral, BorderLayout.CENTER);
-
         // ======= PIE DE PÁGINA =======
         JLabel lblFooter = new JLabel("Sistema de Gestión de Biblioteca", JLabel.CENTER);
         lblFooter.setFont(new Font("SansSerif", Font.ITALIC, 14));
@@ -67,12 +59,10 @@ public class PanelInicio extends JPanel {
         lblFooter.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         add(lblFooter, BorderLayout.SOUTH);
     }
-    
     // ******* OTROS MÉTODOS *******
 
     // ==== TARJETA NUMÉRICA ====
-    private JPanel crearTarjetaSimple(String titulo, String dato) {
-        // ... (Tu implementación de crearTarjetaSimple, sin cambios necesarios) ...
+    private JPanel crearTarjetaSimple(String titulo, String dato, String icono) {
         PanelRedondeado tarjeta = new PanelRedondeado(
              25, // radio
              PaletaColores.FONDO_BLANCO, 
@@ -80,15 +70,14 @@ public class PanelInicio extends JPanel {
              4 // grosor
          );
          tarjeta.setLayout(new BorderLayout());
-         //tarjeta.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
          tarjeta.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
 
-         JLabel lblTitulo = new JLabel(titulo, JLabel.CENTER);
+         JLabel lblTitulo = new JLabel(icono + " " +titulo, JLabel.CENTER);
          lblTitulo.setFont(new Font("SansSerif", Font.BOLD, 16));
          lblTitulo.setForeground(new Color(60, 60, 60));
 
          JLabel lblDato = new JLabel(dato, JLabel.CENTER);
-         lblDato.setFont(new Font("SansSerif", Font.BOLD, 55));
+         lblDato.setFont(Estilo.FUENTE_DATO_GRANDE);
          lblDato.setForeground(PaletaColores.COLOR_PRIMARIO);
     
 
@@ -99,8 +88,10 @@ public class PanelInicio extends JPanel {
     }
 
     // ==== TARJETA CON LISTA ====
-    private JPanel crearTarjetaLista(String titulo, String[] elementos) {
-        
+    private JPanel crearTarjetaLista(String titulo, String[] elementos, String icono) {
+        if (elementos == null || elementos.length == 0) {
+            elementos = new String[]{"No hay datos disponibles"};
+        }
          PanelRedondeado tarjeta = new PanelRedondeado(
              25,
              PaletaColores.FONDO_BLANCO, 
@@ -110,7 +101,7 @@ public class PanelInicio extends JPanel {
          tarjeta.setLayout(new BorderLayout());
          tarjeta.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-         JLabel lblTitulo = new JLabel(titulo, JLabel.CENTER);
+         JLabel lblTitulo = new JLabel(icono + " " + titulo, JLabel.CENTER);
          lblTitulo.setFont(new Font("SansSerif", Font.BOLD, 16));
          lblTitulo.setForeground(new Color(60, 60, 60));
          lblTitulo.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 5));

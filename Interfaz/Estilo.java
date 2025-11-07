@@ -18,4 +18,8 @@ public final class Estilo {
 
     // Fuente para botones
     public static final Font FUENTE_BOTON = new Font("SansSerif", Font.BOLD, 16);
+    
+    public static final Font FUENTE_TITULO_DASHBOARD = new Font("SansSerif", Font.BOLD, 36);
+    
+    public static final Font FUENTE_DATO_GRANDE = new Font("SansSerif", Font.BOLD, 55);
 }

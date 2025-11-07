@@ -7,10 +7,12 @@ import java.util.regex.*;
 import Biblioteca.Biblioteca;
 import Biblioteca.Socio;
 import Biblioteca.Libro;
+import Biblioteca.Prestamo;
 import Biblioteca.LibroNoPrestadoException;
 import java.util.ArrayList;
 import java.util.Arrays; 
 import Persistencia.Persistencia; 
+import java.text.SimpleDateFormat;
 
 public class GestionBiblioteca {
     
@@ -44,10 +46,10 @@ public class GestionBiblioteca {
         return this.bibliotecaActual.buscarSocio(dni);
     }
     /* ----- POSIBLES CAMBIOS ----- */
-    public void registrarNuevoPrestamo(Socio socio, Libro libro) throws IllegalArgumentException {
-        Calendar fechaHoy = Calendar.getInstance(); 
-        
-        this.bibliotecaActual.prestarLibro(fechaHoy, socio, libro); 
+    public void registrarNuevoPrestamo(Date p_fecha, Socio socio, Libro libro) throws IllegalArgumentException {
+        Calendar fecha = Calendar.getInstance();
+        fecha.setTime(p_fecha);
+        this.bibliotecaActual.prestarLibro(fecha, socio, libro); 
     }
     public int obtenerSociosPorTipo(String p_tipo){
         return this.bibliotecaActual.cantidadDeSociosPorTipo(p_tipo);
@@ -230,7 +232,67 @@ public class GestionBiblioteca {
         }
         return datosTabla;
     }
-    
+    public String obtenerDetallesLibro(String titulo) {
+        try {
+            ArrayList<Libro> libros = this.bibliotecaActual.getLibros();
+            
+            Libro libroEncontrado = null;
+            for (Libro libro : libros) {
+                if (libro.getTitulo().equalsIgnoreCase(titulo.trim())) {
+                    libroEncontrado = libro;
+                    break;
+                }
+            }
+            
+            if (libroEncontrado == null) {
+                return "Libro no encontrado";
+            }
+            
+            StringBuilder detalles = new StringBuilder();
+            detalles.append("📚 Título: ").append(libroEncontrado.getTitulo()).append("\n");
+            detalles.append("📖 Edición: ").append(libroEncontrado.getEdicion()).append("\n");
+            detalles.append("🏢 Editorial: ").append(libroEncontrado.getEditorial()).append("\n");
+            detalles.append("📅 Año: ").append(libroEncontrado.getAnio()).append("\n\n");
+            
+            if (libroEncontrado.prestado()) {
+                Prestamo prestamo = libroEncontrado.ultimoPrestamo();
+                
+                if (prestamo != null && prestamo.getSocio() != null) {
+                    Socio socio = prestamo.getSocio();
+                    
+                    detalles.append("📌 ESTADO: PRESTADO\n\n");
+                    detalles.append("👤 Prestado a:\n");
+                    detalles.append("   • Nombre: ").append(socio.getNombre()).append("\n");
+                    detalles.append("   • DNI: ").append(socio.getDniSocio()).append("\n");
+                    detalles.append("   • Días prestado: ").append(socio.getDiasPrestamos()).append("\n\n");
+                    
+                    // 👇 USAR MÉTODO AUXILIAR
+                    detalles.append("📅 Fecha de préstamo: ")
+                            .append(formatearFecha(prestamo.getFechaRetiro()))
+                            .append("\n");
+                    detalles.append("📅 Fecha de devolución: ")
+                            .append(formatearFecha(prestamo.getFechaDevolucion()));
+                } else {
+                    detalles.append("📌 ESTADO: PRESTADO\n");
+                    detalles.append("⚠️ No se encontró información del préstamo actual");
+                }
+            } else {
+                detalles.append("📌 ESTADO: DISPONIBLE EN BIBLIOTECA ✅");
+            }
+            
+            return detalles.toString();
+            
+        } catch (Exception e) {
+            return "Error al obtener detalles: " + e.getMessage();
+        }
+    }
+    private String formatearFecha(Calendar fecha) {
+        if (fecha == null) {
+            return "No devolvió hasta la fecha";
+        }
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+        return formato.format(fecha.getTime());
+    }
     /**
      * Llama al String obligatorio y extrae únicamente la sección de conteo y resumen.
      * @return String con solo los conteos de Estudiantes y Docentes.

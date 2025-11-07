@@ -409,7 +409,7 @@ public class PanelPrestamo extends JPanel {
             }
             
             // Registrar el préstamo
-            controlador.registrarNuevoPrestamo(socioEncontrado, libroEncontrado);
+            controlador.registrarNuevoPrestamo(fechaSeleccionada, socioEncontrado, libroEncontrado);
             
             // Formato de fecha para mostrar
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
