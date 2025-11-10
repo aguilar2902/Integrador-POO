@@ -1,9 +1,9 @@
 #BlueJ class context
 comment0.target=VentanaPrincipal
 comment1.params=p_controlador
-comment1.target=VentanaPrincipal(Controlador.GestionBiblioteca)
+comment1.target=VentanaPrincipal(controlador.GestionBiblioteca)
 comment2.params=p_controlador
-comment2.target=void\ setControlador(Controlador.GestionBiblioteca)
+comment2.target=void\ setControlador(controlador.GestionBiblioteca)
 comment3.params=
 comment3.target=void\ configurarApariencia()
 comment4.params=

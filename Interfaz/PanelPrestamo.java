@@ -1,4 +1,4 @@
-package Interfaz;
+package interfaz;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -9,11 +9,9 @@ import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import Controlador.GestionBiblioteca;
-import Biblioteca.Socio;
-import Biblioteca.Libro;
+import java.util.*;
+import controlador.*;
+import biblioteca.*;
 
 public class PanelPrestamo extends JPanel {
     

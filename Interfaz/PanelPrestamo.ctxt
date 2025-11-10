@@ -1,7 +1,7 @@
 #BlueJ class context
 comment0.target=PanelPrestamo
 comment1.params=p_controlador
-comment1.target=PanelPrestamo(Controlador.GestionBiblioteca)
+comment1.target=PanelPrestamo(controlador.GestionBiblioteca)
 comment10.params=e
 comment10.target=void\ focusGained(java.awt.event.FocusEvent)
 comment11.params=e
@@ -23,7 +23,7 @@ comment18.target=void\ mouseReleased(java.awt.event.MouseEvent)
 comment19.params=
 comment19.target=void\ buscarDatos()
 comment2.params=p_controlador
-comment2.target=void\ setControlador(Controlador.GestionBiblioteca)
+comment2.target=void\ setControlador(controlador.GestionBiblioteca)
 comment20.params=
 comment20.target=void\ registrarPrestamo()
 comment21.params=

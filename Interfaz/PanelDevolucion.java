@@ -1,11 +1,11 @@
-package Interfaz;
+package interfaz;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.util.ArrayList;
-import Controlador.GestionBiblioteca;
+import controlador.GestionBiblioteca;
 
 public class PanelDevolucion extends JPanel {
     

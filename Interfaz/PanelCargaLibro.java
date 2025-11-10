@@ -1,4 +1,4 @@
-package Interfaz;
+package interfaz;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -7,7 +7,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import Controlador.GestionBiblioteca;
+import controlador.*;
 
 public class PanelCargaLibro extends JPanel {
     

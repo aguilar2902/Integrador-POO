@@ -1,4 +1,4 @@
-package Interfaz;
+package interfaz;
 
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
@@ -11,7 +11,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import Controlador.GestionBiblioteca;
+import controlador.GestionBiblioteca;
 
 public class PanelCargaSocio extends JPanel {
     

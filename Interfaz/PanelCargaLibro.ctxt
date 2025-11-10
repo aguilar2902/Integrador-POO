@@ -1,7 +1,7 @@
 #BlueJ class context
 comment0.target=PanelCargaLibro
 comment1.params=p_controlador
-comment1.target=PanelCargaLibro(Controlador.GestionBiblioteca)
+comment1.target=PanelCargaLibro(controlador.GestionBiblioteca)
 comment10.params=texto
 comment10.target=javax.swing.JButton\ crearBotonEstilizado(java.lang.String)
 comment11.params=e
@@ -21,7 +21,7 @@ comment17.target=void\ mostrarMensajeError(java.lang.String)
 comment18.params=mensaje
 comment18.target=void\ mostrarMensajeExito(java.lang.String)
 comment2.params=p_controlador
-comment2.target=void\ setControlador(Controlador.GestionBiblioteca)
+comment2.target=void\ setControlador(controlador.GestionBiblioteca)
 comment3.params=
 comment3.target=void\ setVistaCargaLibro()
 comment4.params=

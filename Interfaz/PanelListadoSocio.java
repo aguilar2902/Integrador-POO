@@ -1,13 +1,12 @@
-package Interfaz;
+package interfaz;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.util.ArrayList;
-import Biblioteca.Biblioteca; 
-import Biblioteca.Socio; 
-import Controlador.GestionBiblioteca;
+import biblioteca.*;
+import controlador.GestionBiblioteca;
 
 public class PanelListadoSocio extends JPanel {
     
@@ -17,6 +16,7 @@ public class PanelListadoSocio extends JPanel {
     private JComboBox<String> cmbFiltroTipo;
     private JButton btnEliminarSocio;
     private JButton btnActualizar;
+    private JButton btnModificarDias;
     private GestionBiblioteca controlador; 
 
     // ******* CONSTRUCTOR *******
@@ -153,6 +153,16 @@ public class PanelListadoSocio extends JPanel {
         btnActualizar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnActualizar.setPreferredSize(new Dimension(200, 40));
         
+        // 👇 NUEVO BOTÓN MODIFICAR DÍAS
+        btnModificarDias = new JButton("⏱️ MODIFICAR DÍAS PRÉSTAMO");
+        btnModificarDias.setFont(Estilo.FUENTE_BOTON);
+        btnModificarDias.setBackground(new Color(0, 123, 255)); // Azul
+        btnModificarDias.setForeground(Color.WHITE);
+        btnModificarDias.setFocusPainted(false);
+        btnModificarDias.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnModificarDias.setPreferredSize(new Dimension(240, 40));
+        btnModificarDias.setEnabled(false); // Deshabilitado inicialmente
+    
         // Botón Eliminar (Rojo/Advertencia)
         btnEliminarSocio = new JButton("🗑️ ELIMINAR SOCIO");
         btnEliminarSocio.setFont(Estilo.FUENTE_BOTON);
@@ -164,6 +174,7 @@ public class PanelListadoSocio extends JPanel {
         btnEliminarSocio.setEnabled(false); // Deshabilitado hasta que se seleccione una fila
         
         panel.add(btnActualizar);
+        panel.add(btnModificarDias);
         panel.add(btnEliminarSocio);
         
         return panel;
@@ -177,15 +188,144 @@ public class PanelListadoSocio extends JPanel {
             cargarDatosTabla(tipoSeleccionado);
         });
         
+         // 👇 EVENTO DEL BOTÓN MODIFICAR DÍAS 
+        btnModificarDias.addActionListener(e -> modificarDiasPrestamoResponsable());
+    
         // Evento del botón Eliminar
         btnEliminarSocio.addActionListener(e -> eliminarSocioSeleccionado());
         
         // Habilitar/deshabilitar botón según selección
         tablaSocios.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
-                btnEliminarSocio.setEnabled(tablaSocios.getSelectedRow() != -1);
+                int filaSeleccionada = tablaSocios.getSelectedRow();
+                if(filaSeleccionada != -1){
+                    btnEliminarSocio.setEnabled(true);
+                    
+                    // Habilitar botón de modificar días solo si es Docente Responsable
+                    DefaultTableModel modelo = (DefaultTableModel) tablaSocios.getModel();
+                    String dniStr = (String) modelo.getValueAt(filaSeleccionada, 0);
+                    String tipo = (String) modelo.getValueAt(filaSeleccionada, 2);
+                    
+                    try {
+                        int dni = Integer.parseInt(dniStr.trim());
+                        boolean esDocenteResponsable = tipo.equalsIgnoreCase("Docente") 
+                                                        && controlador.esDocenteResponsable(dni);
+                        btnModificarDias.setEnabled(esDocenteResponsable);
+                    } catch (NumberFormatException ex) {
+                        btnModificarDias.setEnabled(false);
+                    }
+                }else{
+                    btnEliminarSocio.setEnabled(false);
+                    btnModificarDias.setEnabled(false);
+                }
+                
             }
         });
+    }
+    
+    // 👇 NUEVO MÉTODO PARA MODIFICAR DÍAS DE PRÉSTAMO
+    private void modificarDiasPrestamoResponsable() {
+        int filaSeleccionada = tablaSocios.getSelectedRow();
+        
+        if (filaSeleccionada == -1) {
+            return;
+        }
+        
+        DefaultTableModel modelo = (DefaultTableModel) tablaSocios.getModel();
+        String dniStr = (String) modelo.getValueAt(filaSeleccionada, 0);
+        String nombre = (String) modelo.getValueAt(filaSeleccionada, 1);
+        
+        try {
+            int dni = Integer.parseInt(dniStr.trim());
+            
+            // Verificar que sea docente responsable
+            if (!controlador.esDocenteResponsable(dni)) {
+                JOptionPane.showMessageDialog(this,
+                    "El docente seleccionado no es un responsable.\n" +
+                    "Solo se pueden modificar días de docentes responsables.",
+                    "No es Responsable",
+                    JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            
+            // Obtener días actuales
+            int diasActuales = controlador.obtenerDiasPrestamoDocente(dni);
+            
+            // Crear panel del diálogo
+            JPanel panel = new JPanel(new GridLayout(4, 1, 10, 10));
+            panel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+            
+            JLabel lblTitulo = new JLabel("📋 Modificar Días de Préstamo");
+            lblTitulo.setFont(new Font("SansSerif", Font.BOLD, 16));
+            lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
+            
+            JLabel lblInfo = new JLabel("Días de préstamo actuales: " + diasActuales + " días");
+            lblInfo.setFont(Estilo.FUENTE_ETIQUETA);
+            
+            JLabel lblNuevos = new JLabel("¿Cuantos dias desea agregarle?:");
+            lblNuevos.setFont(Estilo.FUENTE_ETIQUETA);
+            
+            JSpinner spinnerDias = new JSpinner(new SpinnerNumberModel(diasActuales, 1, 365, 1));
+            spinnerDias.setFont(new Font("SansSerif", Font.PLAIN, 16));
+            ((JSpinner.DefaultEditor) spinnerDias.getEditor()).getTextField().setHorizontalAlignment(JTextField.CENTER);
+            
+            panel.add(lblTitulo);
+            panel.add(lblInfo);
+            panel.add(lblNuevos);
+            panel.add(spinnerDias);
+            
+            // Mostrar diálogo
+            int resultado = JOptionPane.showConfirmDialog(this,
+                panel,
+                "Modificar Días - " + nombre,
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE);
+            
+            if (resultado == JOptionPane.OK_OPTION) {
+                int nuevosDias = (int) spinnerDias.getValue();
+                
+                // Confirmar cambio
+                int confirmar = JOptionPane.showConfirmDialog(this,
+                    "¿Confirma el cambio de días de préstamo?\n\n" +
+                    "Docente: " + nombre + "\n" +
+                    "Días actuales: " + diasActuales + " días\n" +
+                    "Días nuevos: " + (diasActuales + nuevosDias) + " días",
+                    "Confirmar Modificación",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE);
+                
+                if (confirmar == JOptionPane.YES_OPTION) {
+                    // Realizar la modificación
+                    boolean actualizado = controlador.modificarDiasPrestamoResponsable(dni, nuevosDias);
+                    
+                    if (actualizado) {
+                        JOptionPane.showMessageDialog(this,
+                            "✓ Días de préstamo actualizados correctamente\n\n" +
+                            "Docente: " + nombre + "\n" +
+                            "DNI: " + dni + "\n" +
+                            "Días anteriores: " + diasActuales + " días\n" +
+                            "Días nuevos: " + (diasActuales + nuevosDias) + " días",
+                            "Actualización Exitosa",
+                            JOptionPane.INFORMATION_MESSAGE);
+                        
+                        // Refrescar tabla
+                        refrescarTabla();
+                    } else {
+                        JOptionPane.showMessageDialog(this,
+                            "❌ No se pudieron actualizar los días de préstamo.\n" +
+                            "Verifique que el docente sea responsable.",
+                            "Error en la Actualización",
+                            JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+            
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this,
+                "Error al leer el DNI del docente",
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        }
     }
     
     /**

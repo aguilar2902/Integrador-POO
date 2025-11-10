@@ -1,17 +1,11 @@
-package Controlador; 
+package controlador; 
 
-import Interfaz.*;
+import interfaz.*;
 import javax.swing.SwingUtilities;
 import java.util.*;
 import java.util.regex.*;
-import Biblioteca.Biblioteca;
-import Biblioteca.Socio;
-import Biblioteca.Libro;
-import Biblioteca.Prestamo;
-import Biblioteca.LibroNoPrestadoException;
-import java.util.ArrayList;
-import java.util.Arrays; 
-import Persistencia.Persistencia; 
+import biblioteca.*;
+import persistencia.*; 
 import java.text.SimpleDateFormat;
 
 public class GestionBiblioteca {
@@ -92,6 +86,49 @@ public class GestionBiblioteca {
         // En este caso, si solo hay una línea (que asumimos es el encabezado), devolvemos vacío.
         return new String[0];
     }
+    
+    public boolean esDocenteResponsable(int dni) {
+        ArrayList<Socio> socios = bibliotecaActual.getSocios();
+        for (Socio socio : socios) {
+            if (socio instanceof Docente && socio.getDniSocio() == dni) {
+                Docente docente = (Docente) socio;
+                return docente.esResponsable(); // Método que debe existir en Docente
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Obtiene los días de préstamo de un docente
+     */
+    public int obtenerDiasPrestamoDocente(int dni) {
+        ArrayList<Socio> socios = bibliotecaActual.getSocios();
+        for (Socio socio : socios) {
+            if (socio instanceof Docente && socio.getDniSocio() == dni) {
+                return socio.getDiasPrestamos();
+            }
+        }
+        return 0;
+    }
+    
+    /**
+     * Modifica los días de préstamo de un docente responsable
+     */
+    public boolean modificarDiasPrestamoResponsable(int dni, int nuevosDias) {
+        ArrayList<Socio> socios = bibliotecaActual.getSocios();
+        for (Socio socio : socios) {
+            if (socio instanceof Docente && socio.getDniSocio() == dni) {
+                Docente docente = (Docente) socio;
+                // Solo permitir si es responsable
+                if (docente.esResponsable()) {
+                    docente.cambiarDiasDePrestamo(nuevosDias); // Método que debe existir en Docente
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public Libro buscarLibroPorTitulo(String titulo) {
         // Obtenemos la lista maestra de libros de la capa de Negocio.
         ArrayList<Libro> libros = this.bibliotecaActual.getLibros(); 

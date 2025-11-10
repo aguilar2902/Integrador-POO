@@ -1,10 +1,10 @@
-package Interfaz;
+package interfaz;
 
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
 import java.net.URL;
-import Controlador.GestionBiblioteca;
+import controlador.*;
 
 public class PanelNavegacion extends JPanel{
     

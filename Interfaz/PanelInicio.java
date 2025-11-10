@@ -1,9 +1,9 @@
-package Interfaz;
+package interfaz;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
-import Controlador.GestionBiblioteca;
+import controlador.GestionBiblioteca;
 
 public class PanelInicio extends JPanel {
     private GestionBiblioteca controlador;

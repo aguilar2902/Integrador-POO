@@ -1,12 +1,12 @@
-package Interfaz;
+package interfaz;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.util.ArrayList;
-import Biblioteca.Biblioteca;
-import Controlador.GestionBiblioteca;
+import biblioteca.Biblioteca;
+import controlador.GestionBiblioteca;
 
 public class PanelListadoLibro extends JPanel {
     

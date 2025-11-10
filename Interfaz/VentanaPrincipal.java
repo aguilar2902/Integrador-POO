@@ -1,11 +1,12 @@
-package Interfaz;
+package interfaz;
+
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import com.formdev.flatlaf.FlatLightLaf;
-import Biblioteca.*;
-import Controlador.GestionBiblioteca;
+import biblioteca.*;
+import controlador.GestionBiblioteca;
 
 
 public class VentanaPrincipal extends JFrame {

@@ -1,7 +1,7 @@
 #BlueJ class context
 comment0.target=PanelCargaSocio
 comment1.params=p_controlador
-comment1.target=PanelCargaSocio(Controlador.GestionBiblioteca)
+comment1.target=PanelCargaSocio(controlador.GestionBiblioteca)
 comment10.params=e
 comment10.target=void\ focusGained(java.awt.event.FocusEvent)
 comment11.params=e
@@ -23,7 +23,7 @@ comment18.target=void\ registrarSocio()
 comment19.params=
 comment19.target=void\ limpiarFormulario()
 comment2.params=p_controlador
-comment2.target=void\ setControlador(Controlador.GestionBiblioteca)
+comment2.target=void\ setControlador(controlador.GestionBiblioteca)
 comment20.params=mensaje
 comment20.target=void\ mostrarMensajeError(java.lang.String)
 comment21.params=mensaje

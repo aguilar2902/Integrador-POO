@@ -1,8 +1,6 @@
-package Interfaz;
-
+package interfaz;
 
 import java.awt.Color;
-
 public class PaletaColores
 {
     // Fondo principal de la ventana

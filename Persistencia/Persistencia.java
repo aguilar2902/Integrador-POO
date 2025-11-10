@@ -1,7 +1,7 @@
-package Persistencia;
+package persistencia;
 
 import java.io.*;
-import Biblioteca.Biblioteca;
+import biblioteca.Biblioteca;
 
 public class Persistencia {
     

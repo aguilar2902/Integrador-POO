@@ -1,7 +1,7 @@
 #BlueJ class context
 comment0.target=PanelListadoLibro
 comment1.params=p_controlador
-comment1.target=PanelListadoLibro(Controlador.GestionBiblioteca)
+comment1.target=PanelListadoLibro(controlador.GestionBiblioteca)
 comment10.params=
 comment10.target=void\ buscarLibros()
 comment11.params=
@@ -13,7 +13,7 @@ comment13.target=javax.swing.JTable\ getTabla()
 comment14.params=
 comment14.target=javax.swing.table.DefaultTableModel\ getModeloTabla()
 comment2.params=p_controlador
-comment2.target=void\ setControlador(Controlador.GestionBiblioteca)
+comment2.target=void\ setControlador(controlador.GestionBiblioteca)
 comment3.params=
 comment3.target=void\ configurarListenerSeleccion()
 comment4.params=

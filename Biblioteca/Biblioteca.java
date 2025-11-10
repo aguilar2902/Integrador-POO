@@ -1,17 +1,13 @@
-package Biblioteca;
+package biblioteca;
 
-
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.*;
 import java.io.*;
-
 /**
  * La clase Biblioteca administra los préstamos de sus libros y gestiona las colecciones
  * de Socios, Libros y Prestamos del sistema.
  * Es la clase responsable de aplicar las reglas de negocio (limites de prestamo, vencimientos, etc.).
  * 
- * @author Grupo  1.1 Aguilar-Bengochea-Espindola
+ * @author Grupo 1.1 Aguilar-Bengochea-Espindola
  * @version 1
  */
 public class Biblioteca implements Serializable
@@ -25,140 +21,131 @@ public class Biblioteca implements Serializable
 
     /**
      * Constructor de la clase Biblioteca
-     * Inicializa la Biblioteca con un nombre y una lista inicial de Libros y otro de socios.
-     * @param p_nombre
-     * @param p_libros
-     * @param p_socios
+     * Inicializa la Biblioteca con un nombre y una lista inicial de Libros y otra de socios.
+     * @param p_nombre nombre a asignar a la biblioteca
+     * @param p_libros lista de libros
+     * @param p_socios lista de socios
      */
-    public Biblioteca(String p_nombre,ArrayList<Libro> p_libros, ArrayList<Socio> p_socios)
-    {
-    this.setNombre(p_nombre);
-    this.setLibros(p_libros);
-    this.setSocios(p_socios);
+    public Biblioteca(String p_nombre,ArrayList<Libro> p_libros, ArrayList<Socio> p_socios){
+        this.setNombre(p_nombre);
+        this.setLibros(p_libros);
+        this.setSocios(p_socios);
     }
+    
     /**
      * Constructor de la clase Biblioteca
-     * Inicializa la Biblioteca con un nombre y todas las colecciones vacías.
-     * @param p_nombre
-     * @param p_libros
-     * @param p_socios
+     * Inicializa la Biblioteca con un nombre y todas las colecciones vacías
+     * @param p_nombre nombre a asignar a la biblioteca
      */
-    public Biblioteca(String p_nombre)
-    {
-    this.setNombre(p_nombre);
-    this.setLibros(new ArrayList<Libro>());
-    this.setSocios(new ArrayList<Socio>());
+    public Biblioteca(String p_nombre){
+        this.setNombre(p_nombre);
+        this.setLibros(new ArrayList<Libro>());
+        this.setSocios(new ArrayList<Socio>());
     }
-    /**
-     * Seters
-     */
+    //Mutadores
     /**
      * Método privado, utilizado internamente para asignar el nombre a la biblioteca.
-     * (Generalmente llamado solo desde el constructor).
-     * 
-     * @param  p_nombre, Nombre de la biblioteca
+     * (Generalmente llamado solo desde el constructor). 
+     * @param  p_nombre nombre de la biblioteca
      */
-    private void setNombre(String p_nombre)
-    {
-        this.nombre=p_nombre;
+    private void setNombre(String p_nombre){
+        this.nombre = p_nombre;
     }
+    
     /**
      * Método privado, utilizado  para asignar la lista completa de libros a la biblioteca.
      * Si el parámetro recibido es {@code null}, se inicializa una nueva lista vacía
      * para evitar referencias nulas en el sistema.
-     * 
      * @param p_libros La colección de objetos Libro a asignar a la biblioteca.Si es {@code null}, 
      * se crea una nueva lista vacía.
      */
-    private void setLibros(ArrayList<Libro> p_libros)
-    {//Agregue validacion hecha por marcelo
+    private void setLibros(ArrayList<Libro> p_libros){
         if(p_libros == null){
             this.libros = new ArrayList<Libro>();
         } else {
             this.libros = p_libros;
         }
     }
+    
     /**
      * Método privado, utilizado  para asignar la lista completa de socios a la biblioteca.
      * Si el parámetro recibido es {@code null}, se inicializa una nueva lista vacía
      * para evitar referencias nulas y posibles errores en tiempo de ejecución.
-     * @param p_libros La colección de objetos {@code Socio} a asignar a la biblioteca.
+     * @param p_socios La colección de objetos {@code Socio} a asignar a la biblioteca.
      * Si es {@code null}, se crea una nueva lista vacía.
      */
-    private void setSocios(ArrayList<Socio> p_socios)
-    {
+    private void setSocios(ArrayList<Socio> p_socios){
          if(p_socios == null){
             this.socios = new ArrayList<Socio>();
         } else {
             this.socios = p_socios;
         }
     }
-     /**
-     * Geters
-     */
+    //Observadores
     /**
      * Método publico, utilizado para obtener el nombre de la biblioteca.
      * 
-     * @return Retorna un String con el nombre actual de la biblioteca.
+     * @return un String con el nombre actual de la biblioteca.
      */
-    public String getNombre()
-    { 
+    public String getNombre(){
         return this.nombre;
     }
+    
     /**
      * Método publico, utilizado para obtener la colección de libros de la biblioteca.
      * 
-     * @return Retorna un ArrayList con todos los objetos Libro almacenados en la colección.
+     * @return Retorna un ArrayList con todos los objetos Libro almacenados.
      */
-    public ArrayList<Libro> getLibros()
-    {
+    public ArrayList<Libro> getLibros(){
        return this.libros;
     }
+    
     /**
      * Método publico, utilizado para obtener la colección de socios de la biblioteca.
      * 
      * @return Retorna un ArrayList con todos los objetos Socio almacenados en la colección.
      */
-    public ArrayList<Socio> getSocios()
-    {
+    public ArrayList<Socio> getSocios(){
         return this.socios;
-    }
+    } 
+    //Otros Métodos
     /**
-     * Métodos de la Clase Biblioteca
-     */
-    /**
-     * Este método agrega un libro a la coleccion de libro, que es pasado por parametro
-     * 
-     * @param p_libro
+     * Este método agrega un libro a la coleccion de libros.
+     * @param p_libro libro a agregar.
+     * @return un booleano que confirma la operación.
      */
     public boolean agregarLibro(Libro p_libro){
         return this.getLibros().add(p_libro);
     }
+    
     /**
-     * Este método quita un libro a la coleccion de libro, que es pasado por parametro
-     * 
-     * @param p_libro
+     * Este método quita un libro de la colección de libros.
+     * @param p_libro libro a quitar.
+     * @return un booleano que confirma la operación.
      */
     public boolean quitarLibro(Libro p_libro){
         return this.getLibros().remove(p_libro);
     }
+    
     /**
-     * Este método agrega un socio a la coleccion de Socio, que es pasado por parametro
-     * 
-     * @param p_socio
+     * Este método agrega un socio a la colección.
+     * @param p_socio socio a agregar.
+     * @return un booleano confirmando la operación.
      */
     public boolean agregarSocio(Socio p_socio){
         return this.getSocios().add(p_socio);
     }
+    
     /**
      * Este método aquita un socio a la coleccion de Socio, que es pasado por parametro
-     * 
-     * @param p_socio
+     * @param p_socio socio a quitar.
+     * @return booleano confirmando la operación.
      */
     public boolean quitarSocio(Socio p_socio){
         return this.getSocios().remove(p_socio);
     }
-       /**
+    
+    /**
      * Crea una nueva instancia de Libro y la añade a la colección de la biblioteca.
      * Este método está diseñado para registrar ejemplares individuales; 
      * por lo tanto, no se incluye validación de duplicados de título/edición.
@@ -177,49 +164,53 @@ public class Biblioteca implements Serializable
             System.out.println("No se ha podido agregar el Libro");
         }
     }
+    
     /**
-     * Crea una nueva instancia de Socio y la añade a la colección de la biblioteca.
-     * Este método está diseñado para registrar socios individuales; 
+     * Crea una nueva instancia de Estudiante y la añade a la colección de socios de la biblioteca.
      *
      * @param p_dniSocio El numero de DNI del nuevo socio-Estudiante.
-     * @param p_nombre El nombre del nuevos socio-Estudiante.
+     * @param p_nombre El nombre del nuevo socio-Estudiante.
      * @param p_carrera El nombre de la carrera del nuevo socio-Estudiante.
+     * @throws IllegalArgumentException cuando se intenta agregar un socio-Estudiante con un dni que ya está registrado.
      */
-    public void nuevoSocioEstudiante(int p_dniSocio,String p_nombre,String p_carrera){
+    public void nuevoSocioEstudiante(int p_dniSocio,String p_nombre,String p_carrera) throws IllegalArgumentException{
         for (Socio socio : this.getSocios()) {
             if (socio.getDniSocio() == p_dniSocio) {
-                throw new IllegalArgumentException("ERROR: El socio con DNI " + p_dniSocio + " ya está registrado.");
+                throw new IllegalArgumentException("ERROR: Ya hay un socio con el DNI " + p_dniSocio + " registrado.");
             }
         }
         Estudiante estudiante = new Estudiante (p_dniSocio,p_nombre, p_carrera);
         this.agregarSocio(estudiante);
     }
+    
     /**
-     * Crea una nueva instancia de Socio y la añade a la colección de la biblioteca.
+     * Crea una nueva instancia de Docente y la añade a la colección de la biblioteca.
      * Este método está diseñado para registrar socios individuales; 
      *
      * @param p_dniSocio El numero de DNI del nuevo socio-Docente.
      * @param p_nombre El nombre del nuevos socio-Docente.
      * @param p_area El nombre del area al que pertenece el nuevo socio-Docente.
+     * @throws IllegalArgumentException cuando se intenta agregar un socio-Docente con un dni que ya está registrado.
      */
     public void nuevoSocioDocente(int p_dniSocio,String p_nombre,String p_area){
         for (Socio socio : this.getSocios()) {
             if (socio.getDniSocio() == p_dniSocio) {
-                throw new IllegalArgumentException("ERROR: El socio con DNI " + p_dniSocio + " ya está registrado.");
+                throw new IllegalArgumentException("ERROR: Ya hay un socio con el DNI " + p_dniSocio + " registrado.");
             }
         }
-        Socio docente = new Docente (p_dniSocio,p_nombre,p_area);
+        Docente docente = new Docente (p_dniSocio,p_nombre,p_area);
         this.agregarSocio(docente);
     }
+    
     /**
      * El método verifica que el libro este en existencia, luego corrobora que el socio este en condiciones de retirar el libro,
      * por ultimo realiza el prestamo y lo asigna al socio y al libro.
      *
-     * @param p_fechaRetiro Indica la fecha que se retiro el libro
-     * @param p_socio       Este parametro, hace referencia al socio que realiza el prestamo. 
-     * @param p_libro       Nombre del libro que fue prestado por la biblioteca.
-     * 
-     * @return Retorna false si el libro no fue prestado y true si el libro fue prestado.
+     * @param p_fechaRetiro Indica la fecha en que se retira el libro
+     * @param p_socio Socio que solicita el préstamo. 
+     * @param p_libro Libro requerido.
+     * @return true si el préstamo se realizó.
+     * @throws IllegalArgumentException cuando el libro no se encuentra disponible o el socio no tiene permitido pedir alguno.
      */
     public boolean prestarLibro (Calendar p_fechaRetiro, Socio p_socio,Libro p_libro) throws IllegalArgumentException{
         if (p_libro.prestado()) { 
@@ -237,13 +228,11 @@ public class Biblioteca implements Serializable
     }
     /**
      * Este método se encarga de asignar la fecha de devolución del préstamo con la fecha actual.
-     * Si el libro no se encuentra prestado lanzar una excepción de tipo LibroNoPrestadoException,
-     * con el mensaje descriptivo “El libro <<titulo>> no se puede devolver ya que se encuentra en la biblioteca”
-     * 
-     * @param p_libro Libro que se desea debolver 
+     * Si el libro no se encuentra prestado lanza una excepción (LibroNoPrestadoException),
+     * @param p_libro Libro que se desea devolver
      * @throws LibroNoPrestadoException Si se intenta devolver un libro que no está prestado.
      */
-    public void devolverLibro(Libro p_libro)throws LibroNoPrestadoException{
+    public void devolverLibro(Libro p_libro) throws LibroNoPrestadoException{
          if(p_libro.prestado()){
             Calendar fechaHoy = Calendar.getInstance();
             p_libro.ultimoPrestamo().registrarFechaDevolucion(fechaHoy);
@@ -252,11 +241,12 @@ public class Biblioteca implements Serializable
             throw new LibroNoPrestadoException("El libro " + p_libro.getTitulo() + " no se puede devolver ya que se encuentra en la biblioteca");
         }   
     }
+    
     /**
      * Este método devuelve la cantidad de socios del tipo pasado como parámetro.
      * 
-     * @param p_objeto Este paramero representa el tipo de socio del cual se quiere conocer la cantidad
-     * @return Retorna un valor entero que representa la cantidad de socios, del tipo solicitado por parametro
+     * @param p_objeto tipo de socio del cual se quiere conocer la cantidad
+     * @return valor entero que representa la cantidad de socios del tipo solicitado por parametro
      */
     public int cantidadDeSociosPorTipo(String p_objeto){
         int cantSocios = 0;
@@ -267,6 +257,7 @@ public class Biblioteca implements Serializable
         }
         return cantSocios;
     }
+    
     /**
      * Este método devuelve una colección con los préstamos vencidos al día de la fecha.
      * 
@@ -277,25 +268,26 @@ public class Biblioteca implements Serializable
         ArrayList<Prestamo> prestamosVencidos = new ArrayList<Prestamo>();
         Calendar fechaActual = Calendar.getInstance();
         for (Libro libros : this.getLibros()) {/// el recorrio socio for(Socio socio : this.getSocios())
-          for (Prestamo p : libros.getPrestamos()) {//for(Prestamo prestamo : socio.getPrestamos()
-             if (p.vencido(fechaActual)) {
-                prestamosVencidos.add(p); 
-                }
-           }
+            for (Prestamo prestamo : libros.getPrestamos()) {//for(Prestamo prestamo : socio.getPrestamos()
+                 if (prestamo.vencido(fechaActual)) {       
+                     prestamosVencidos.add(prestamo); 
+                 }
+            }
         }
         return prestamosVencidos;
     }
+    
     /**
      * Este método devuelve un colección con los docentes responsables.
-     * 
      * @return una lista (ArrayList) de objetos {@code Docente} que son responsables ,
      * al momento de la consulta. Si no hay docetes responsables, la lista se devuelve vacía.
      */
     public ArrayList<Docente> docentesResponsables(){
         ArrayList<Docente> responsables = new ArrayList<Docente>();
-        for (Socio socios : this.getSocios()) {
-            if (socios instanceof Docente) {
-                Docente docente = (Docente) socios; 
+        for (Socio socio : this.getSocios()) {
+            if (socio instanceof Docente docente) {
+                //Anulado debido a que la variable docente ya se genera arriba
+                //Docente docente = (Docente) socios; 
                 if (docente.esResponsable()) {
                     responsables.add(docente);
                 }
@@ -303,12 +295,11 @@ public class Biblioteca implements Serializable
         }
         return responsables;
     }
+    
     /**
-     * Este método devuelve el nombre del Socio que tiene el libro con el título ingresado,
-     * y si no se encuentra prestado lanza una excepción de tipo LibroNoPrestadoException 
-     * con el mensaje descriptivo “El libro se encuentra en la biblioteca”.
-     * 
-     * @param p_libro
+     * Este método obtiene el nombre del Socio que tiene el libro con el título ingresado.
+     * @param p_libro titulo del libro del que se desea consultar
+     * @return el nombre del socio que tiene el libro en su poder
      * throws LibroNoPrestadoException Si el libro no está actualmente prestado.
      */
     public String quienTieneElLibro(Libro p_libro)throws LibroNoPrestadoException{
@@ -319,11 +310,11 @@ public class Biblioteca implements Serializable
         Socio socio = ultimo.getSocio();
         return socio.getNombre();
     }
+    
     /**
-     * Este método devuelve un String según el suiente formato:
-     * 1) D.N.I.: <<dni>> || <<nombre y apellido>> (<<tipo>>) || Libros Prestados: <<cant. prést. actuales >>
-     * 
-     * @return Retorno una lista completa de socios y sus datos resumidos.
+     * Este método devuelve un String según el siguiente formato:
+     * "D.N.I.: -dni- || -nombre y apellido- (-tipo-) || Libros Prestados: -cant. prést. actuales-"
+     * @return lista de socios con sus datos básicos.
      */
     public String listaDeSocios(){
         String listaSocios = "";
@@ -338,10 +329,11 @@ public class Biblioteca implements Serializable
         listaSocios += "\n" + "*".repeat(38) + "\n";
         return listaSocios;
     }
+    
     /**
      * Este método devuelve el Socio que tiene el dni pasado como parámetro, o null si no lo encuentra.
      * 
-     * @return Retorna un objeto del tipo Socio
+     * @return un objeto del tipo Socio o null en su defecto.
      */
     public Socio buscarSocio(int p_dni){
         for(Socio socio: this.getSocios()){
@@ -351,10 +343,10 @@ public class Biblioteca implements Serializable
         }
         return null;
     }
+    
     /**
-     * Este método devuelve un String según formato 2: 1) Titulo: <<titulo>> || Prestado: (<<Si|No>>)
-     * 
-     *@return Retorna un lista de string 
+     * Este método devuelve un String según formato "Titulo: -titulo- || Prestado: (-Si|No-)"
+     * @return lista de titulos de libros de la biblioteca y si están prestados o no, como cadena de texto.
      */
     public String listaDeLibros(){
         String resultado = "";
@@ -365,16 +357,15 @@ public class Biblioteca implements Serializable
             contador++;
         }
         return resultado;
-
     }
+    
     /**
      * Este método devuelve un String con la lista de los títulos con los que cuenta la Biblioteca.
      * Coda titulo se devuelve en un linea separada
-     * 
-     * @return Retorna una String con todos los títulos de la biblioteca.
+     * @return cadena de texto con todos los títulos de la biblioteca.
      */
     public String listaDeTitulos(){
-         HashSet<String> listadoTitulos = new HashSet<String>();
+        HashSet<String> listadoTitulos = new HashSet<String>();
         String resultado = "";
         int contador = 1;
         for(Libro libro : this.getLibros()){
@@ -386,11 +377,11 @@ public class Biblioteca implements Serializable
         }
         return resultado;
     }
+    
     /**
      * Este método devuelve un String según formato 3:
-     * * D.N.I.: <<dni>> || <<nombre y apellido>> (<<tipo>>) || Libros Prestados: <<cant. prést. actuales >>
-     * 
-     * @return Retorna una lista de String con los docentes responsables
+     * * D.N.I.: -dni- || -nombre y apellido- (-tipo-) || Libros Prestados: -cant. prést. actuales-
+     * @return lista de String con los docentes responsables
      */
     public String listaDeDocentesResponsables(){
         String resultado = "\n\tLista de Docentes Responsables\n";
@@ -401,7 +392,6 @@ public class Biblioteca implements Serializable
         }else{
             resultado += "* No hay docentes responsables registrados. *\n";
         }
-        
         return resultado;
     }
 }
