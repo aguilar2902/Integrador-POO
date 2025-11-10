@@ -32,48 +32,110 @@ public class GestionBiblioteca {
         this.bibliotecaActual.nuevoSocioDocente(dni, nombre, area);
     }
     
+    /**
+     * Elimina un socio del sistema.
+     * @param dni DNI del socio a eliminar
+     * @return true si se eliminó exitosamente, false si no se encontró
+     * @throws IllegalArgumentException Si el socio tiene préstamos activos
+     */
+    public boolean eliminarSocio(int dni) throws IllegalArgumentException {
+        Socio socio = buscarSocioPorDni(dni);
+        if (socio == null) {
+            return false; // No existe el socio
+        }
+        // Verificar que no tenga préstamos activos
+        if (socio.cantLibrosPrestados() > 0) {
+            throw new IllegalArgumentException(
+                "No se puede eliminar el socio " + socio.getNombre() + 
+                " porque tiene " + socio.cantLibrosPrestados() + " préstamo(s) activo(s)"
+            );
+        }
+        return this.bibliotecaActual.quitarSocio(socio);
+    }
+    
     public void nuevoLibro(String p_titulo,int p_edicion,String p_editorial,int  p_anio){
         this.bibliotecaActual.nuevoLibro(p_titulo,p_edicion,p_editorial,p_anio);
     }
     
-    public Socio buscarSocioPorDni(int dni){
-        return this.bibliotecaActual.buscarSocio(dni);
-    }
-    /* ----- POSIBLES CAMBIOS ----- */
     public void registrarNuevoPrestamo(Date p_fecha, Socio socio, Libro libro) throws IllegalArgumentException {
         Calendar fecha = Calendar.getInstance();
         fecha.setTime(p_fecha);
         this.bibliotecaActual.prestarLibro(fecha, socio, libro); 
     }
-    public int obtenerSociosPorTipo(String p_tipo){
+    
+    /**
+     * Procesa la devolución de un libro.
+     * @param tituloLibro Título del libro a devolver
+     * @throws IllegalArgumentException Si el libro no existe o no está prestado
+     */
+    public void procesarDevolucion(String tituloLibro) throws IllegalArgumentException {
+        try {
+            // Buscar el libro por título
+            Libro libro = buscarLibroPorTitulo(tituloLibro);
+            if (libro == null) {
+                throw new IllegalArgumentException("El libro '" + tituloLibro + "' no fue encontrado en el sistema");
+            }
+            this.bibliotecaActual.devolverLibro(libro);
+        } catch (LibroNoPrestadoException e) {
+            // Convertir la excepción específica en IllegalArgumentException para la GUI
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+    
+        public int obtenerSociosPorTipo(String p_tipo){
         return this.bibliotecaActual.cantidadDeSociosPorTipo(p_tipo);
     }
+    
     /**
-     * Obtiene el String formateado, lo parsea y lo convierte en una ArrayList de 
-     * String arrays (filas) para la JTable.
-     * @param tipoFiltro El filtro a aplicar ("Todos", "Estudiante", "Docente").
-     * @return ArrayList<String[]> lista de socios lista para JTable.
+     * Método que obtiene los préstamos vencidos y los formatea para mostrar en un JTextArea.
+     * 
+     * @return String con el listado de préstamos vencidos formateado
      */
-    public ArrayList<String[]> obtenerListaSociosParaTabla(String tipoFiltro) {
-        // Obtener el String obligatorio de la capa de Negocio
-        String listaCompleta = this.bibliotecaActual.listaDeSocios();
-        // Parsear el String para obtener una lista de String[]
-        ArrayList<String[]> datosTabla = parsearStringSocios(listaCompleta);
-        // Aplicar el filtro final y devolver
-        return aplicarFiltroTabla(datosTabla, tipoFiltro);
+    public String listarPrestamosVencidos() {
+        ArrayList<Prestamo> vencidos = this.bibliotecaActual.prestamosVencidos();
+        StringBuilder texto = new StringBuilder();
+        SimpleDateFormat fecha = new SimpleDateFormat("dd/MM/yyyy");
+        
+        texto.append("========================================\n");
+        texto.append("       PRÉSTAMOS VENCIDOS\n");
+        texto.append("========================================\n\n");
+        
+        if (vencidos.isEmpty()) {
+            texto.append("No hay préstamos vencidos al día de la fecha.\n");
+        } else {
+            texto.append("Total de préstamos vencidos: ").append(vencidos.size()).append("\n\n");
+            
+            int contador = 1;
+            for (Prestamo prestamo : vencidos) {
+                texto.append("--- Préstamo #").append(contador).append(" ---\n");
+                texto.append(prestamo.toString()).append("\n");
+                
+                // Calcular y mostrar días de atraso
+                Calendar fechaVencimiento = (Calendar) prestamo.getFechaRetiro().clone();
+                fechaVencimiento.add(Calendar.DAY_OF_YEAR, prestamo.getSocio().getDiasPrestamos());
+                
+                Calendar hoy = Calendar.getInstance();
+                long diferencia = hoy.getTimeInMillis() - fechaVencimiento.getTimeInMillis();
+                long diasAtraso = diferencia / (1000 * 60 * 60 * 24);
+                
+                texto.append("Vencimiento: ").append(fecha.format(fechaVencimiento.getTime())).append("\n");
+                texto.append("Días de atraso: ").append(diasAtraso).append("\n");
+                texto.append("\n");
+                
+                contador++;
+            }
+        }
+        
+        texto.append("========================================\n");
+        return texto.toString();
     }
     
-    public int obtenerCantidadLibrosRegistrados(){
-        return this.bibliotecaActual.getLibros().size();
+    public String listaDocentesResponsables(){
+        return this.bibliotecaActual.listaDeDocentesResponsables();
     }
     
-    public String[] listaDeTitulos(){
-        String listaCompleta = this.bibliotecaActual.listaDeTitulos();
-        String[] lineas =listaCompleta.split("\n");
-        return lineas;
-    }
     public String[] listaDeDocentesResponsables(){
-        String listaCompleta = this.bibliotecaActual.listaDeDocentesResponsables();
+        String listaCompleta = this.listaDocentesResponsables();
         String[] lineas = listaCompleta.split("\n");
         if (lineas.length > 1) {
             // Crear un nuevo array que comienza desde el índice 2 (ahi comienza la lista de docentes)
@@ -96,6 +158,70 @@ public class GestionBiblioteca {
             }
         }
         return false;
+    }
+    
+    /**
+     * Obtiene el String formateado, lo parsea y lo convierte en una ArrayList de 
+     * String arrays (filas) para la JTable.
+     * @param tipoFiltro El filtro a aplicar ("Todos", "Estudiante", "Docente").
+     * @return ArrayList<String[]> lista de socios lista para JTable.
+     */
+    public ArrayList<String[]> obtenerListaSociosParaTabla(String tipoFiltro) {
+        // Obtener el String obligatorio de la capa de Negocio
+        String listaCompleta = this.bibliotecaActual.listaDeSocios();
+        // Parsear el String para obtener una lista de String[]
+        ArrayList<String[]> datosTabla = parsearStringSocios(listaCompleta);
+        // Aplicar el filtro final y devolver
+        return aplicarFiltroTabla(datosTabla, tipoFiltro);
+    }
+    
+    public Socio buscarSocioPorDni(int dni){
+        return this.bibliotecaActual.buscarSocio(dni);
+    }
+    
+    public ArrayList<String[]> listaDeLibros(){
+        String listaLibros = this.bibliotecaActual.listaDeLibros();
+        ArrayList<String[]> datosLibros = new ArrayList<String[]>();
+        String[]lineas = listaLibros.split("\n"); //divido String por lineas
+        int numeroFila = 1;
+        int indiceReal = 0; // se trata de la posicion en el arrayList
+        
+        for (String linea : lineas) {
+            // Ejemplo de línea: "1) Titulo: Java. Como Programar || Prestado: (No)"
+            if (linea.contains("Titulo:") && linea.contains("Prestado:")) {
+                // Extraer el título
+                String titulo = linea.substring(linea.indexOf("Titulo:") + 8, linea.indexOf("||")).trim();
+                // Extraer el estado de préstamo
+                String prestado = linea.substring(linea.indexOf("Prestado: (") + 11, linea.lastIndexOf(")")).trim();
+                // 👇 Convertir "Si"/"No" a formato visual con emojis
+                String estadoFormateado;
+                if (prestado.equalsIgnoreCase("Si")) {
+                    estadoFormateado = "PRESTADO 🚫";
+                } else {
+                    estadoFormateado = "DISPONIBLE ✅";
+                }
+                // Guardar el resultado como array
+                datosLibros.add(new String[]{
+                    String.valueOf(numeroFila),
+                    titulo, 
+                    estadoFormateado,
+                    String.valueOf(indiceReal)
+                });
+                numeroFila++;
+            }
+        }
+        return datosLibros;
+    }
+    
+    public String listaTitulos(){
+        return this.bibliotecaActual.listaDeTitulos();
+    }
+    
+    //este metodo es para poder mostrar en tabla
+    public String[] listaDeTitulos(){
+        String listaCompleta = this.listaTitulos();
+        String[] lineas =listaCompleta.split("\n");
+        return lineas;
     }
     
     /**
@@ -128,6 +254,56 @@ public class GestionBiblioteca {
         }
         return false;
     }
+    
+    public String obtenerDetallesLibro(int p_indice) {
+        try {
+            ArrayList<Libro> libros = this.bibliotecaActual.getLibros();
+            
+            
+            Libro libroEncontrado = libros.get(p_indice);
+            
+            StringBuilder detalles = new StringBuilder();
+            detalles.append("📚 Título: ").append(libroEncontrado.getTitulo()).append("\n");
+            detalles.append("📖 Edición: ").append(libroEncontrado.getEdicion()).append("\n");
+            detalles.append("🏢 Editorial: ").append(libroEncontrado.getEditorial()).append("\n");
+            detalles.append("📅 Año: ").append(libroEncontrado.getAnio()).append("\n\n");
+            
+            if (libroEncontrado.prestado()) {
+                Prestamo prestamo = libroEncontrado.ultimoPrestamo();
+                
+                if (prestamo != null && prestamo.getSocio() != null) {
+                    Socio socio = prestamo.getSocio();
+                    
+                    detalles.append("📌 ESTADO: PRESTADO\n\n");
+                    detalles.append("👤 Prestado a:\n");
+                    detalles.append("   • Nombre: ").append(prestamo.getSocio().getNombre()).append("\n");
+                    detalles.append("   • DNI: ").append(socio.getDniSocio()).append("\n");
+                    detalles.append("   • Días prestado: ").append(socio.getDiasPrestamos()).append("\n\n");
+                    
+                    // 👇 USAR MÉTODO AUXILIAR
+                    detalles.append("📅 Fecha de préstamo: ")
+                            .append(formatearFecha(prestamo.getFechaRetiro()))
+                            .append("\n");
+                    detalles.append("📅 Fecha de devolución: ")
+                            .append(formatearFecha(prestamo.getFechaDevolucion()));
+                } else {
+                    detalles.append("📌 ESTADO: PRESTADO\n");
+                    detalles.append("⚠️ No se encontró información del préstamo actual");
+                }
+            } else {
+                detalles.append("📌 ESTADO: DISPONIBLE EN BIBLIOTECA ✅");
+            }
+            
+            return detalles.toString();
+            
+        } catch (Exception e) {
+            return "Error al obtener detalles: " + e.getMessage();
+        }
+    }
+    
+    public int obtenerCantidadLibrosRegistrados(){
+        return this.bibliotecaActual.getLibros().size();
+    }
 
     public Libro buscarLibroPorTitulo(String titulo) {
         // Obtenemos la lista maestra de libros de la capa de Negocio.
@@ -144,37 +320,7 @@ public class GestionBiblioteca {
         return null;
     }
     // --- MÉTODOS AUXILIARES DENTRO DE GESTIONBIBLIOTECA ---
-    public ArrayList<String[]> listaDeLibros(){
-        String listaLibros = this.bibliotecaActual.listaDeLibros();
-        ArrayList<String[]> datosLibros = new ArrayList<String[]>();
-        String[]lineas = listaLibros.split("\n"); //divido String por lineas
-        int numeroFila = 1; 
-        
-        for (String linea : lineas) {
-            // Ejemplo de línea: "1) Titulo: Java. Como Programar || Prestado: (No)"
-            if (linea.contains("Titulo:") && linea.contains("Prestado:")) {
-                // Extraer el título
-                String titulo = linea.substring(linea.indexOf("Titulo:") + 8, linea.indexOf("||")).trim();
-                // Extraer el estado de préstamo
-                String prestado = linea.substring(linea.indexOf("Prestado: (") + 11, linea.lastIndexOf(")")).trim();
-                // 👇 Convertir "Si"/"No" a formato visual con emojis
-                String estadoFormateado;
-                if (prestado.equalsIgnoreCase("Si")) {
-                    estadoFormateado = "PRESTADO 🚫";
-                } else {
-                    estadoFormateado = "DISPONIBLE ✅";
-                }
-                // Guardar el resultado como array
-                datosLibros.add(new String[]{
-                    String.valueOf(numeroFila),
-                    titulo, 
-                    estadoFormateado
-                });
-                numeroFila++;
-            }
-        }
-        return datosLibros;
-    }
+    
     /**
      * Obtiene la lista de TODOS los libros que están actualmente prestados.
      * @return ArrayList con los datos formateados para la tabla [Nro, Título, Estado]
@@ -198,44 +344,8 @@ public class GestionBiblioteca {
         }
         return librosPrestados;
     }
-    /**
-     * Elimina un socio del sistema.
-     * @param dni DNI del socio a eliminar
-     * @return true si se eliminó exitosamente, false si no se encontró
-     * @throws IllegalArgumentException Si el socio tiene préstamos activos
-     */
-    public boolean eliminarSocio(int dni) throws IllegalArgumentException {
-        Socio socio = buscarSocioPorDni(dni);
-        if (socio == null) {
-            return false; // No existe el socio
-        }
-        // Verificar que no tenga préstamos activos
-        if (socio.cantLibrosPrestados() > 0) {
-            throw new IllegalArgumentException(
-                "No se puede eliminar el socio " + socio.getNombre() + 
-                " porque tiene " + socio.cantLibrosPrestados() + " préstamo(s) activo(s)"
-            );
-        }
-        return this.bibliotecaActual.quitarSocio(socio);
-    }
-    /**
-     * Procesa la devolución de un libro.
-     * @param tituloLibro Título del libro a devolver
-     * @throws IllegalArgumentException Si el libro no existe o no está prestado
-     */
-    public void procesarDevolucion(String tituloLibro) throws IllegalArgumentException {
-        try {
-            // Buscar el libro por título
-            Libro libro = buscarLibroPorTitulo(tituloLibro);
-            if (libro == null) {
-                throw new IllegalArgumentException("El libro '" + tituloLibro + "' no fue encontrado en el sistema");
-            }
-            this.bibliotecaActual.devolverLibro(libro);
-        } catch (LibroNoPrestadoException e) {
-            // Convertir la excepción específica en IllegalArgumentException para la GUI
-            throw new IllegalArgumentException(e.getMessage());
-        }
-    }
+    
+    
     private ArrayList<String[]> parsearStringSocios(String listaCompleta) {
         ArrayList<String[]> datosTabla = new ArrayList<>();
         String[] lineas = listaCompleta.split("\n");
@@ -269,60 +379,7 @@ public class GestionBiblioteca {
         }
         return datosTabla;
     }
-    public String obtenerDetallesLibro(String titulo) {
-        try {
-            ArrayList<Libro> libros = this.bibliotecaActual.getLibros();
-            
-            Libro libroEncontrado = null;
-            for (Libro libro : libros) {
-                if (libro.getTitulo().equalsIgnoreCase(titulo.trim())) {
-                    libroEncontrado = libro;
-                    break;
-                }
-            }
-            
-            if (libroEncontrado == null) {
-                return "Libro no encontrado";
-            }
-            
-            StringBuilder detalles = new StringBuilder();
-            detalles.append("📚 Título: ").append(libroEncontrado.getTitulo()).append("\n");
-            detalles.append("📖 Edición: ").append(libroEncontrado.getEdicion()).append("\n");
-            detalles.append("🏢 Editorial: ").append(libroEncontrado.getEditorial()).append("\n");
-            detalles.append("📅 Año: ").append(libroEncontrado.getAnio()).append("\n\n");
-            
-            if (libroEncontrado.prestado()) {
-                Prestamo prestamo = libroEncontrado.ultimoPrestamo();
-                
-                if (prestamo != null && prestamo.getSocio() != null) {
-                    Socio socio = prestamo.getSocio();
-                    
-                    detalles.append("📌 ESTADO: PRESTADO\n\n");
-                    detalles.append("👤 Prestado a:\n");
-                    detalles.append("   • Nombre: ").append(socio.getNombre()).append("\n");
-                    detalles.append("   • DNI: ").append(socio.getDniSocio()).append("\n");
-                    detalles.append("   • Días prestado: ").append(socio.getDiasPrestamos()).append("\n\n");
-                    
-                    // 👇 USAR MÉTODO AUXILIAR
-                    detalles.append("📅 Fecha de préstamo: ")
-                            .append(formatearFecha(prestamo.getFechaRetiro()))
-                            .append("\n");
-                    detalles.append("📅 Fecha de devolución: ")
-                            .append(formatearFecha(prestamo.getFechaDevolucion()));
-                } else {
-                    detalles.append("📌 ESTADO: PRESTADO\n");
-                    detalles.append("⚠️ No se encontró información del préstamo actual");
-                }
-            } else {
-                detalles.append("📌 ESTADO: DISPONIBLE EN BIBLIOTECA ✅");
-            }
-            
-            return detalles.toString();
-            
-        } catch (Exception e) {
-            return "Error al obtener detalles: " + e.getMessage();
-        }
-    }
+    
     private String formatearFecha(Calendar fecha) {
         if (fecha == null) {
             return "No devolvió hasta la fecha";
@@ -330,6 +387,7 @@ public class GestionBiblioteca {
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
         return formato.format(fecha.getTime());
     }
+    
     /**
      * Llama al String obligatorio y extrae únicamente la sección de conteo y resumen.
      * @return String con solo los conteos de Estudiantes y Docentes.

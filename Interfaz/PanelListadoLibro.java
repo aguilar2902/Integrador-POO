@@ -53,7 +53,8 @@ public class PanelListadoLibro extends JPanel {
             }
             
             // Obtener información detallada del controlador
-            String detalles = controlador.obtenerDetallesLibro(titulo);
+            int indice = Integer.parseInt(tablaLibros.getValueAt(filaSeleccionada, 3).toString());
+            String detalles = this.controlador.obtenerDetallesLibro(indice);
             
             // Crear un área de texto para mostrar los detalles
             JTextArea textArea = new JTextArea(detalles);
@@ -130,7 +131,7 @@ public class PanelListadoLibro extends JPanel {
         tarjeta.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         
         // Definición del Modelo de la Tabla
-        String[] columnas = {"Nro", "Titulo", "Estado Préstamo"};
+        String[] columnas = {"Nro", "Titulo", "Estado Préstamo", "IndiceReal"};
         modeloTabla = new DefaultTableModel(columnas, 0) {
              // Anulación para que las celdas no sean editables
              @Override
@@ -149,6 +150,10 @@ public class PanelListadoLibro extends JPanel {
         tablaLibros.getTableHeader().setBackground(PaletaColores.FONDO_BLANCO); 
         tablaLibros.getTableHeader().setReorderingAllowed(false);
         tablaLibros.setGridColor(new Color(230, 230, 230)); // Líneas de cuadrícula sutiles
+        // Ocultar la columna del índice
+        tablaLibros.getColumnModel().getColumn(3).setMinWidth(0);
+        tablaLibros.getColumnModel().getColumn(3).setMaxWidth(0);
+        tablaLibros.getColumnModel().getColumn(3).setWidth(0);
  
         // 👇 *** CENTRAR EL CONTENIDO DE LAS CELDAS ***
         DefaultTableCellRenderer centrado = new DefaultTableCellRenderer();
