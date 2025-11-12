@@ -1,0 +1,13 @@
+#BlueJ class context
+comment0.target=PanelInicio
+comment1.params=p_controlador
+comment1.target=PanelInicio(controlador.GestionBiblioteca)
+comment2.params=p_controlador
+comment2.target=void\ setControlador(controlador.GestionBiblioteca)
+comment3.params=
+comment3.target=void\ setVistaInicio()
+comment4.params=titulo\ dato\ icono
+comment4.target=javax.swing.JPanel\ crearTarjetaSimple(java.lang.String,\ java.lang.String,\ java.lang.String)
+comment5.params=titulo\ elementos\ icono
+comment5.target=javax.swing.JPanel\ crearTarjetaLista(java.lang.String,\ java.lang.String[],\ java.lang.String)
+numComments=6

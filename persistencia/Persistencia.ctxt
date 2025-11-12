@@ -1,0 +1,9 @@
+#BlueJ class context
+comment0.target=Persistencia
+comment1.params=p_biblioteca
+comment1.target=void\ guardar(biblioteca.Biblioteca)
+comment1.text=\r\n\ Guarda\ el\ objeto\ Biblioteca\ en\ un\ archivo\ binario.\r\n
+comment2.params=
+comment2.target=biblioteca.Biblioteca\ cargar()
+comment2.text=\r\n\ Carga\ el\ objeto\ Biblioteca\ desde\ un\ archivo\ binario.\r\n
+numComments=3
