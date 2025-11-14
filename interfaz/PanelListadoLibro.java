@@ -150,21 +150,21 @@ public class PanelListadoLibro extends JPanel {
         tablaLibros.getTableHeader().setFont(Estilo.FUENTE_ETIQUETA);
         tablaLibros.getTableHeader().setBackground(PaletaColores.FONDO_BLANCO); 
         tablaLibros.getTableHeader().setReorderingAllowed(false);
-        tablaLibros.setGridColor(new Color(230, 230, 230)); // Líneas de cuadrícula sutiles
+        tablaLibros.setGridColor(new Color(230, 230, 230)); // Líneas de cuadrícula sutiles        
+        
+        // 👇 *** CENTRAR EL CONTENIDO DE LAS CELDAS ***
+        DefaultTableCellRenderer centrado = new DefaultTableCellRenderer();
+        centrado.setHorizontalAlignment(SwingConstants.CENTER);
+        // Aplicar el renderizador a todas las columnas
+        for (int i = 0; i < tablaLibros.getColumnCount(); i++) {
+            tablaLibros.getColumnModel().getColumn(i).setCellRenderer(centrado);
+        }
         
         // Ocultar la columna del índice
         tablaLibros.getColumnModel().getColumn(3).setMinWidth(0);
         tablaLibros.getColumnModel().getColumn(3).setMaxWidth(0);
         tablaLibros.getColumnModel().getColumn(3).setWidth(0);
- 
-        // 👇 *** CENTRAR EL CONTENIDO DE LAS CELDAS ***
-        DefaultTableCellRenderer centrado = new DefaultTableCellRenderer();
-        centrado.setHorizontalAlignment(SwingConstants.CENTER);
-    
-        // Aplicar el renderizador a todas las columnas
-        for (int i = 0; i < tablaLibros.getColumnCount(); i++) {
-            tablaLibros.getColumnModel().getColumn(i).setCellRenderer(centrado);
-        }
+        
         // 3. Agregar la tabla a un JScrollPane (imprescindible para JTable)
         JScrollPane scrollPane = new JScrollPane(tablaLibros);
         scrollPane.setBorder(BorderFactory.createEmptyBorder()); // Eliminar el borde feo del JScrollPane

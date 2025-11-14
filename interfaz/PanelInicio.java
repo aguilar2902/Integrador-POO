@@ -107,6 +107,14 @@ public class PanelInicio extends JPanel {
          lista.setBackground(PaletaColores.FONDO_BLANCO); 
          lista.setForeground(PaletaColores.TEXTO_OSCURO);
          lista.setFont(new Font("SansSerif", Font.PLAIN, 14));
+         lista.setCellRenderer(new DefaultListCellRenderer() {
+        @Override
+        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            label.setHorizontalAlignment(SwingConstants.CENTER);
+            return label;
+        }
+        });
 
          JScrollPane scroll = new JScrollPane(lista);
          scroll.setBorder(BorderFactory.createEmptyBorder());

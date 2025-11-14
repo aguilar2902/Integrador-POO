@@ -10,4 +10,6 @@ comment4.params=titulo\ dato\ icono
 comment4.target=javax.swing.JPanel\ crearTarjetaSimple(java.lang.String,\ java.lang.String,\ java.lang.String)
 comment5.params=titulo\ elementos\ icono
 comment5.target=javax.swing.JPanel\ crearTarjetaLista(java.lang.String,\ java.lang.String[],\ java.lang.String)
-numComments=6
+comment6.params=list\ value\ index\ isSelected\ cellHasFocus
+comment6.target=java.awt.Component\ getListCellRendererComponent(javax.swing.JList,\ java.lang.Object,\ int,\ boolean,\ boolean)
+numComments=7

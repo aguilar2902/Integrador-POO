@@ -130,7 +130,7 @@ public class GestionBiblioteca
     */
    
     public String[] listaDeDocentesResponsables(){
-        String listaCompleta = listaDocentesResponsables();
+        String listaCompleta = this.listaDocentesResponsables();
         String[] lineas = listaCompleta.split("\n");
         if (lineas.length > 1) {
             // Crear un nuevo array que comienza desde el índice 2 (ahi comienza la lista de docentes)
@@ -176,7 +176,7 @@ public class GestionBiblioteca
         String[]lineas = listaLibros.split("\n"); //divido String por lineas
         int numeroFila = 1; 
         int indiceReal = 0;
-        
+
         for (String linea : lineas) {
             // Ejemplo de línea: "1) Titulo: Java. Como Programar || Prestado: (No)"
             if (linea.contains("Titulo:") && linea.contains("Prestado:")) {
@@ -202,11 +202,14 @@ public class GestionBiblioteca
                 indiceReal++;
             }
         }
-        return datosLibros;
+            return datosLibros;
     }
     
     public String[] listadoDeTitulos(){
         String listaCompleta = this.biblioteca.listaDeTitulos();
+        if(listaCompleta.isEmpty()){
+            return new String[]{"* No hay libros registrados actualmente. *"};
+        }
         String[] lineas =listaCompleta.split("\n");
         return lineas;
     }
